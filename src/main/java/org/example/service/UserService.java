@@ -3,6 +3,7 @@ package org.example.service;
 import org.example.dto.UserDto;
 import org.example.entity.UserEntity;
 import org.example.repository.UserRepository;
+import org.example.util.PasswodUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -31,7 +32,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<UserEntity> user = repository.findByUsername(username);
-        return user.map(CustomUserDetails::new).orElseThrow(()-> new UsernameNotFoundException("No such user"));
+        return user.map(CustomUserDetails::new).orElseThrow(() -> new UsernameNotFoundException("No such user"));
     }
 
     /**
@@ -43,11 +44,12 @@ public class UserService implements UserDetailsService {
         if (!repository.findByEmail(userDto.getEmail()).isEmpty()) {
             throw new Exception("Аккаунт с такой почтой уже существует!");
         }
-        if (!repository.findByUsername(userDto.getUsername()).isEmpty()){
+        if (!repository.findByUsername(userDto.getUsername()).isEmpty()) {
             throw new Exception("Аккаунт с таким логином уже существует!");
         }
+
         UserEntity userEntity = UserEntity.builder().fio(userDto.getFio())
-                .username(userDto.getUsername()).password(userDto.getPassword())
+                .username(userDto.getUsername()).password(PasswodUtils.hashPassword(userDto.getPassword()))
                 .email(userDto.getEmail()).role(userDto.getRole()).build();
         repository.save(userEntity);
     }
