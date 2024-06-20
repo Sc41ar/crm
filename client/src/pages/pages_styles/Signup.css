@@ -1,0 +1,50 @@
+:root {
+    --radius: 0.75rem;
+  }
+  
+  body {
+    font-family: var(--font-oswald), sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-manrope), sans-serif;
+  }
+
+/* button, input[type="submit"], input[type="reset"], input[type="button"] {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+} */
+  
+button:hover, input:hover {
+    background-color: #ddd;
+}
+  
+input[type="text"], input[type="email"], textarea {
+    padding: 0.75rem;
+    border-radius: var(--radius);
+    border: 1px solid #ccc;
+    transition: border-color 0.3s ease;
+}
+  
+input[type="password"] {
+    padding: 0.75rem;
+    border-radius: var(--radius);
+    border: 1px solid #ccc;
+    transition: border-color 0.3s ease;
+    /* Add additional styles for password inputs */
+    background-color: #350f0f;
+}
+
+input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+input[type="password"]:focus {
+    /* Add additional focus styles for password inputs */
+    background-color: #b64a4a;
+}

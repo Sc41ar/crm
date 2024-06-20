@@ -1,4 +1,4 @@
-plugins {
+ plugins {
     id("java")
     id("org.springframework.boot") version "3.3.0"
 }
@@ -32,7 +32,8 @@ dependencies {
     implementation("jakarta.validation:jakarta.validation-api:3.1.0")
     // https://mvnrepository.com/artifact/org.postgresql/postgresql
     implementation("org.postgresql:postgresql:42.7.3")
-
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.17.1")
 }
 
 tasks.test {
