@@ -71,8 +71,8 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
      */
     public String determineRedirectUrl(Authentication authentication) {
         Map<String, String> roleUrlMap = new HashMap<>();
-        roleUrlMap.put("ROLE_USER", "crm/users");
-        roleUrlMap.put("ROLE_ADMIN", "crm/admins");
+        roleUrlMap.put("ROLE_USER", "/crm/users");
+        roleUrlMap.put("ROLE_ADMIN", "/crm/admins");
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         for (GrantedAuthority grantedAuthority : authorities) {
             String authorityName = grantedAuthority.getAuthority();

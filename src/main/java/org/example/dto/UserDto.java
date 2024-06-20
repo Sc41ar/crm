@@ -2,13 +2,17 @@ package org.example.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * DTO пользователя
  */
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class UserDto {
     /**
      * ФИО пользователя
@@ -30,11 +34,6 @@ public class UserDto {
      */
     @NotBlank
     private String password;
-    /**
-     * Подтверждение пароля
-     */
-    @NotBlank
-    private String matchingPassword;
     /**
      * Роль пользователя
      */

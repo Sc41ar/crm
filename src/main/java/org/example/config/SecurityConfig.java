@@ -72,7 +72,6 @@ public class SecurityConfig{
         http.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(auth ->
                         auth.requestMatchers("/crm/users").hasAnyRole("USER", "ADMIN")
                                 .requestMatchers("/crm/admins").hasRole("ADMIN")
-                                .requestMatchers("/login").anonymous()
                                 .anyRequest().permitAll())
                 .formLogin(login -> login.permitAll().successHandler(customAuthenticationSuccessHandler()));
         return http.build();

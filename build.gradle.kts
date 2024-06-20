@@ -40,7 +40,7 @@ tasks.test {
 }
 
 extra.apply {
-    set("db_url", "jdbc:postgresql://localhost:5432/messages")
-    set("db_user", "postgres")
-    set("db_pass", "Postgres")
+    set("db_url", "jdbc:postgresql://81.31.244.60:5433/root")
+    set("db_user", "user")
+    set("db_pass", "gnnaIaoL0P")
 }
