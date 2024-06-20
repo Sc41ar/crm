@@ -19,7 +19,6 @@ import java.util.Map;
  * Контроллер приложения
  */
 @RestController
-@CrossOrigin(origins = "http://localhost:5173", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.OPTIONS, RequestMethod.POST, RequestMethod.PUT}, allowCredentials = "true", allowedHeaders = "*")
 @RequestMapping("crm/")
 public class WebController {
     private final UserService service;
