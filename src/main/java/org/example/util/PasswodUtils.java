@@ -21,4 +21,15 @@ public class PasswodUtils {
             return password;
         }
     }
+
+    /**
+     * Проверка паролей на соответствией
+     * @param inputPassword пароль, пришедший с фронта
+     * @param dbPassword пароль, который хранится в бд
+     * @return значение проверки
+     */
+    public static boolean isPasswodMatch(String inputPassword, String dbPassword) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        return passwordEncoder.matches(inputPassword, dbPassword);
+    }
 }
