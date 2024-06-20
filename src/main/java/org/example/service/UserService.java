@@ -1,5 +1,6 @@
 package org.example.service;
 
+import io.jsonwebtoken.Jwts;
 import org.example.dto.UserDto;
 import org.example.entity.UserEntity;
 import org.example.repository.UserRepository;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
 import java.util.Optional;
 
 /**
@@ -17,6 +19,9 @@ import java.util.Optional;
  */
 @Service
 public class UserService implements UserDetailsService {
+
+
+    SecretKey key = Jwts.SIG.HS512.key().build(); // or HS384 or HS256
     /**
      * Репозиторий для записей о пользователях
      */
@@ -33,6 +38,30 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<UserEntity> user = repository.findByUsername(username);
         return user.map(CustomUserDetails::new).orElseThrow(() -> new UsernameNotFoundException("No such user"));
+    }
+
+    /**
+     *
+     * @param userDto
+     * @return
+     * @throws Exception
+     */
+    public String userLogin(UserDto userDto) throws Exception {
+        Optional<UserEntity> user = Optional.empty();
+        if (userDto.getEmail() != null) {
+            user = repository.findByEmail(userDto.getEmail());
+        } else if (userDto.getUsername() != null) {
+            user = repository.findByUsername(userDto.getUsername());
+        }
+
+        if (user.isEmpty()) {
+            throw new Exception("Такого пользователя нет");
+        }
+
+        if (PasswodUtils.isPasswodMatch(userDto.getPassword(), user.get().getPassword())) {
+            return Jwts.builder().subject(user.get().getUsername()).signWith(key).compact();
+        }
+        return null;
     }
 
     /**
