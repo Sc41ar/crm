@@ -26,10 +26,10 @@ export default function Component() {
         }
 
         try {
-            const data = { fio:name, email:email, username:username, password:password, role:"ROLE_USER" }
+            const data = { fio: name, email: email, username: username, password: password, role: "ROLE_USER" }
             console.log(data)
 
-            const response = await axios.post('http://localhost:8080/crm/reg', 
+            const response = await axios.post('http://localhost:8080/crm/reg',
                 data);
 
             if (response.status === axios.HttpStatusCode.Ok) {
@@ -49,25 +49,25 @@ export default function Component() {
 
 
     return (
-        <div className="flex min-h-[100dvh] items-center justify-center bg-gray-200 px-4 dark:bg-gray-800">
-            <div className="w-full max-w-md space-y-4 rounded-lg bg-[#374151] p-6 shadow-lg dark:bg-gray-700">
-                <div className="text-center">
-                    <h1 className="text-3xl font-bold">Create an Account</h1>
-                    <p className="text-gray-300 dark:text-gray-400">Register to get started.</p>
+        <div>
+            <div>
+                <div>
+                    <h1>Create an Account</h1>
+                    <p>Register to get started.</p>
                 </div>
-                <form className="space-y-4" onSubmit={handleSubmit}>
+                <form className="signup_form" onSubmit={handleSubmit} >
                     <FormBlock id="name" label="Name" placeholder="Ivan" type="text" required />
                     <FormBlock id="email" label="Email" placeholder="m@example.com" type="email" required />
                     <FormBlock id="username" label="Username" placeholder="username" type="text" required />
-                    <FormBlock id="password" label="Password" type="password" required onChange={(e) => setPassword(e.target.value)} />
-                    <FormBlock id="confirm-password" label="Confirm Password" type="password" required onChange={(e) => setConfirmPassword(e.target.value)} />
-                    <Button className="w-full" type="submit">
+                    <FormBlock id="password" label="Password" type="password" placeholder="password" required onChange={(e) => setPassword(e.target.value)} />
+                    <FormBlock id="confirm-password" label="Confirm Password" placeholder="confirm password" type="password" required onChange={(e) => setConfirmPassword(e.target.value)} />
+                    <Button type="submit">
                         Register
                     </Button>
                 </form>
-                <div className="text-center text-sm text-gray-300 dark:text-gray-400">
+                <div>
                     Already have an account?
-                    <Link className="font-medium hover:underline" to="/signin">
+                    <Link to="/login">
                         Sign In
                     </Link>
                 </div>

@@ -7,12 +7,27 @@ import {
 } from "react-router-dom";
 import './index.css'
 import  Singup  from "./pages/Signup.jsx"
+import Login from "./pages/Login.jsx"
+import NotFound from "./pages/NotFound.jsx"
+import DashBoard from "./pages/DashBoard.jsx"
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/", 
+    element: <DashBoard />,
+  },
+  {
+    path: "/signup", 
     element: <Singup />,
   },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/notfound",
+    element: <NotFound />,
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
