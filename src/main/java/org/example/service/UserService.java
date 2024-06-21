@@ -46,7 +46,7 @@ public class UserService implements UserDetailsService {
      * @return
      * @throws Exception
      */
-    public String userLogin(UserDto userDto) throws Exception {
+    public String userLogin(UserDto userDto) {
         Optional<UserEntity> user = Optional.empty();
         if (userDto.getEmail() != null) {
             user = repository.findByEmail(userDto.getEmail());
@@ -55,7 +55,7 @@ public class UserService implements UserDetailsService {
         }
 
         if (user.isEmpty()) {
-            throw new Exception("Такого пользователя нет");
+            return null;
         }
 
         if (PasswodUtils.isPasswodMatch(userDto.getPassword(), user.get().getPassword())) {

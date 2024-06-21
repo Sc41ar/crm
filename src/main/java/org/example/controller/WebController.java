@@ -73,31 +73,39 @@ public class WebController {
         return ResponseEntity.status(HttpStatus.OK).body("Success");
     }
 
-    @GetMapping(path = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<String> loginUser(@Valid @RequestBody UserDto userDto, HttpServletResponse response) {
         String jwt = "";
-        try {
-            jwt = service.userLogin(userDto);
-        } catch (Exception e) {
-            String errorMessage = e.getLocalizedMessage();
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", errorMessage);
-            ObjectMapper mapper = new ObjectMapper();
-            String json = null;
-            try {
-                json = mapper.writeValueAsString(errorResponse);
-            } catch (JsonProcessingException ex) {
-                ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unknown error");
-            }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(json);
-        }
-        Cookie cookie = new Cookie("jwt", jwt);
-        cookie.setMaxAge(900);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
 
+        jwt = service.userLogin(userDto);
+
+        // Если JWT равен null, то возвращаем ошибку с сообщением "Неверное имя пользователя или пароль"
+        if (jwt == null) {
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                Map<String, String> errorResponse = new HashMap<>();
+                // Добавляем сообщение об ошибке в русском языке
+                errorResponse.put("error", "Неверное имя пользователя или пароль");
+                String json = mapper.writeValueAsString(errorResponse);
+                // Возвращаем HTTP-ответ с кодом 401 Unauthorized и сообщением об ошибке в формате JSON
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(json);
+            } catch (JsonProcessingException ex) {
+                // Если произошла ошибка при формировании JSON, возвращаем простое сообщение об ошибке
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Неизвестная ошибка");
+            }
+        }
+        // Создаем новый Cookie с именем "jwt" и значением JWT токена
+        Cookie cookie = new Cookie("jwt", jwt);
+        // Устанавливаем время жизни Cookie в 900 секунд (15 минут)
+        cookie.setMaxAge(900);
+        // Устанавливаем флаг HttpOnly, чтобы Cookie не был доступен через JavaScript
+        cookie.setHttpOnly(true);
+        // Устанавливаем путь, на котором Cookie будет доступен (в данном случае - корневой путь)
+        cookie.setPath("/");
+        // Добавляем Cookie в HTTP-ответ
         response.addCookie(cookie);
+
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
