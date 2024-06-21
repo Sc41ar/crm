@@ -48,13 +48,13 @@ public class UserService implements UserDetailsService {
      */
     public String userLogin(UserDto userDto) {
         Optional<UserEntity> user = Optional.empty();
-        if (userDto.getEmail() != null) {
+        if (userDto.getEmail() != null && !userDto.getEmail().isEmpty()) {
             user = repository.findByEmail(userDto.getEmail());
-        } else if (userDto.getUsername() != null) {
+        } else if (userDto.getUsername() != null && !userDto.getUsername().isEmpty()) {
             user = repository.findByUsername(userDto.getUsername());
         }
 
-        if (user.isEmpty()) {
+        if (user.isEmpty() || (userDto.getPassword() != null && !userDto.getPassword().isEmpty())) {
             return null;
         }
 
