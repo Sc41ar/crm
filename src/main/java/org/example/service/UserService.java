@@ -2,6 +2,7 @@ package org.example.service;
 
 import io.jsonwebtoken.Jwts;
 import org.example.dto.UserDto;
+import org.example.dto.UserLoginDTO;
 import org.example.entity.UserEntity;
 import org.example.repository.UserRepository;
 import org.example.util.PasswodUtils;
@@ -29,20 +30,35 @@ public class UserService {
      * @param userDto
      * @return
      * @throws Exception
+     * Поиск пользователя по логину
+     * @param username логин пользователя
+     * @return запись пользователя
+     * @throws UsernameNotFoundException не удалось найти пользователя
      */
-    public String userLogin(UserDto userDto) {
-        Optional<UserEntity> user = Optional.empty();
-        if (userDto.getEmail() != null && !userDto.getEmail().isEmpty()) {
-            user = repository.findByEmail(userDto.getEmail());
-        } else if (userDto.getUsername() != null && !userDto.getUsername().isEmpty()) {
-            user = repository.findByUsername(userDto.getUsername());
-        }
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<UserEntity> user = repository.findByUsername(username);
+        return user.map(CustomUserDetails::new).orElseThrow(() -> new UsernameNotFoundException("No such user"));
+    }
 
-        if (user.isEmpty() || userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
+    /**
+     * Метод для входа пользователя
+     * @param loginDto DTO-объект для входа пользователя
+     * @return токен пользователя, если вход успешен, иначе null
+     */
+    public String userLogin(UserLoginDTO loginDto) {
+        Optional<UserEntity> user = Optional.empty();
+
+        if (loginDto.isEmail()) {
+            user = repository.findByEmail(loginDto.getEmailOrUsername());
+        }
+        user = repository.findByUsername(loginDto.getEmailOrUsername());
+
+        if (user.isEmpty()) {
             return null;
         }
 
-        if (PasswodUtils.isPasswodMatch(userDto.getPassword(), user.get().getPassword())) {
+        if (PasswodUtils.isPasswodMatch(loginDto.getPassword(), user.get().getPassword())) {
             return Jwts.builder().subject(user.get().getUsername()).signWith(key).compact();
         }
         return null;
