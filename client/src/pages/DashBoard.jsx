@@ -1,10 +1,11 @@
-
-import Link from "react-router-dom"
+import {React, useState} from "react";
+import { Link } from "react-router-dom";
 import  Input  from "../components/Input"
 import Button from "../components/Button"
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "../components/DropdownMenu"
+import { Card, CardHeader, CardTitle, CardContent } from "../components/Card"
 import  {Table, TableHeader, TableRow, TableHead, TableBody, TableCell}  from "../components/Table"
+import "../index.css"
 
 export default function Component() {
   return (
