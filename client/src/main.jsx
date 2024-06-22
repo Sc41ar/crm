@@ -1,15 +1,12 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
-import './index.css'
-import  Singup  from "./pages/Signup.jsx"
-import Login from "./pages/Login.jsx"
-import NotFound from "./pages/NotFound.jsx"
-import DashBoard from "./pages/DashBoard.jsx"
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import './index.css';
+import DashBoard from './pages/DashBoard';
+import Singup from './pages/Signup';
+import Login from './pages/Login';
+import NotFound from './pages/NotFound';
+
 
 const router = createBrowserRouter([
   {

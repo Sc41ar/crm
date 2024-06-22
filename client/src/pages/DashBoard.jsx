@@ -5,14 +5,13 @@ import Button from "../components/Button"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "../components/DropdownMenu"
 import { Card, CardHeader, CardTitle, CardContent } from "../components/Card"
 import  {Table, TableHeader, TableRow, TableHead, TableBody, TableCell}  from "../components/Table"
-import "../index.css"
 
 export default function Component() {
   return (
-    <div className="flex h-screen w-full">
+    <div className="flex justify-center h-screen w-screen">
       <nav className="flex flex-col bg-gray-900 text-gray-400 dark:bg-gray-950 dark:text-gray-400">
-        <div className="flex h-16 items-center justify-center border-b border-gray-800 dark:border-gray-800">
-          <Link href="#" className="flex items-center gap-2 text-lg font-semibold" prefetch={false}>
+        <div className="flex h-16 justify-center border-b border-gray-800 dark:border-gray-800">
+          <Link href="#" className="flex items-center gap-2 text-lg font-semibold" >
             <Package2Icon className="h-6 w-6" />
             <span className="sr-only">CRM</span>
           </Link>
@@ -51,7 +50,7 @@ export default function Component() {
                 to="#"
                 className="flex items-center gap-3 rounded-lg px-4 py-2 hover:bg-gray-800 hover:text-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-50"
               >
-                <SquareCheckIcon className="h-5 w-5" />
+                <SquareCheckIcon className="h-5 w-5" /> 
                 <span>Tasks</span>
               </Link>
             </li>
@@ -73,19 +72,28 @@ export default function Component() {
                 <span>Settings</span>
               </Link>
             </li>
+            <li>
+              <Link
+                to="#"
+                className="flex items-center gap-3 rounded-lg px-4 py-2 hover:bg-gray-800 hover:text-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-50"
+              >
+                <LogoutIcon className="h-5 w-5" />
+                <span>Logout</span>
+              </Link>
+            </li>
           </ul>
         </div>
       </nav>
-      <main className="flex-1 bg-gray-100 dark:bg-gray-950">
+      <main className="flex-1 bg-gray-500 dark:bg-gray-950">
         <header className="flex h-16 items-center justify-between border-b bg-white px-6 dark:border-gray-800 dark:bg-gray-950">
           <h1 className="text-lg font-medium">Dashboard</h1>
           <div className="flex items-center gap-4">
-            <form className="relative">
-              <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
+            <form className="flex items-center space-x-2">
+              <SearchIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
               <Input
                 type="search"
                 placeholder="Search..."
-                className="pl-8 pr-4 h-9 rounded-md bg-gray-100 dark:bg-gray-800 dark:text-gray-50"
+                className="flex-1 border-none bg-transparent text-sm px-2 focus:outline-none focus:ring-0"
               />
             </form>
             <DropdownMenu>
@@ -106,7 +114,7 @@ export default function Component() {
           </div>
         </header>
         <div className="p-6">
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">Total Customers</CardTitle>
@@ -150,23 +158,23 @@ export default function Component() {
           </div>
           <div className="mt-6">
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardHeader className="flex flex-row items-center justify-between pb-2 ">
                 <CardTitle className="text-sm font-medium">Recent Deals</CardTitle>
-                <Link href="#" className="text-sm font-medium text-blue-500 hover:underline" prefetch={false}>
+                <Link href="#" className="text-, font-medium text-blue-500 hover:underline" prefetch={false}>
                   View all
                 </Link>
               </CardHeader>
               <CardContent>
-                <Table>
+                <Table className = "color-r-gray-50 dark:bg-gray-800 dark:border-gray-500 dark:text-gray-200"  >
                   <TableHeader>
-                    <TableRow>
-                      <TableHead>Deal</TableHead>
-                      <TableHead>Stage</TableHead>
-                      <TableHead>Amount</TableHead>
-                      <TableHead>Close Date</TableHead>
+                    <TableRow className="">
+                      <TableHead className="font-semibold ">Deal</TableHead>
+                      <TableHead className="font-semibold">Stage</TableHead>
+                      <TableHead className="font-semibold">Amount</TableHead>
+                      <TableHead className="font-semibold">Close Date</TableHead>
                     </TableRow>
                   </TableHeader>
-                  <TableBody>
+                  <TableBody className="container border-b border-gray-500 dark:border-gray-800" >
                     <TableRow>
                       <TableCell className="font-medium">
                         <Link href="#" className="hover:underline" prefetch={false}>
@@ -197,7 +205,7 @@ export default function Component() {
                       <TableCell>$25,000</TableCell>
                       <TableCell>May 1, 2023</TableCell>
                     </TableRow>
-                    <TableRow>
+                    <TableRow className="">
                       <TableCell className="font-medium">
                         <Link href="#" className="hover:underline" prefetch={false}>
                           Stark Industries - CRM Upgrade
@@ -255,6 +263,27 @@ function BarChart2Icon(props) {
       <line x1="18" x2="18" y1="20" y2="10" />
       <line x1="12" x2="12" y1="20" y2="4" />
       <line x1="6" x2="6" y1="20" y2="14" />
+    </svg>
+  )
+}
+
+function LogoutIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+      <polyline points="16 17 21 12 16 7" />
+      <line x1="21" x2="9" y1="12" y2="12" />
     </svg>
   )
 }

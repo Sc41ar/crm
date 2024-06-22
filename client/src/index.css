@@ -1,20 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
-  --radius: 0.75rem;
   --font-oswald: Inter, system-ui, Avenir, Helvetica, Arial;
   --font-manrope: Inter, system-ui, Avenir, Helvetica, Arial;
-
-  line-height: 1.5;
-  font-weight: 400;
-  font-family: var(--font-oswald), sans-serif;
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 h1,
