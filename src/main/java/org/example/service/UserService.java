@@ -54,7 +54,7 @@ public class UserService implements UserDetailsService {
             user = repository.findByUsername(userDto.getUsername());
         }
 
-        if (user.isEmpty() || (userDto.getPassword() != null && !userDto.getPassword().isEmpty())) {
+        if (user.isEmpty() || userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
             return null;
         }
 
