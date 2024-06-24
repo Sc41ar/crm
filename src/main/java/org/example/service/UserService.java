@@ -7,6 +7,9 @@ import org.example.entity.UserEntity;
 import org.example.repository.UserRepository;
 import org.example.util.PasswodUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -34,17 +37,6 @@ public class UserService {
      * @param username логин пользователя
      * @return запись пользователя
      * @throws UsernameNotFoundException не удалось найти пользователя
-     */
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserEntity> user = repository.findByUsername(username);
-        return user.map(CustomUserDetails::new).orElseThrow(() -> new UsernameNotFoundException("No such user"));
-    }
-
-    /**
-     * Метод для входа пользователя
-     * @param loginDto DTO-объект для входа пользователя
-     * @return токен пользователя, если вход успешен, иначе null
      */
     public String userLogin(UserLoginDTO loginDto) {
         Optional<UserEntity> user = Optional.empty();
