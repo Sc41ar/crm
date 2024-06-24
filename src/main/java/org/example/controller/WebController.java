@@ -31,25 +31,8 @@ public class WebController {
     }
 
     /**
-     * Обработка GET-запроса - Начальная страница пользователя
-     * @return перенаправление на html
-     */
-    @GetMapping("/users")
-    public String users() {
-        return "forward:/user.html";
-    }
-
-    /**
-     * Обработка GET-запроса - Начальная страница администратора
-     * @return перенаправление на html
-     */
-    @GetMapping("/admins")
-    public String admins() {
-        return "forward:/admin.html";
-    }
-
-    /**
      * Обработка POST-запроса - Страница регистрации
+     *
      * @param userDto полученный DTO-объект регистрируемого пользователя
      * @return результат регистрации
      */

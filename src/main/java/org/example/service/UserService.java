@@ -6,9 +6,6 @@ import org.example.entity.UserEntity;
 import org.example.repository.UserRepository;
 import org.example.util.PasswodUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -18,7 +15,7 @@ import java.util.Optional;
  * Сервис загрузки информации о пользователе
  */
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 
 
     SecretKey key = Jwts.SIG.HS512.key().build(); // or HS384 or HS256
@@ -29,19 +26,6 @@ public class UserService implements UserDetailsService {
     private UserRepository repository;
 
     /**
-     * Поиск пользователя по логину
-     * @param username логин пользователя
-     * @return запись пользователя
-     * @throws UsernameNotFoundException не удалось найти пользователя
-     */
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserEntity> user = repository.findByUsername(username);
-        return user.map(CustomUserDetails::new).orElseThrow(() -> new UsernameNotFoundException("No such user"));
-    }
-
-    /**
-     *
      * @param userDto
      * @return
      * @throws Exception
@@ -66,6 +50,7 @@ public class UserService implements UserDetailsService {
 
     /**
      * Регистрация нового пользователя
+     *
      * @param userDto DTO-объект пользователя
      * @throws Exception ошибка при попытке добавить пользователя с уже используемым логином или почтой
      */
