@@ -1,6 +1,9 @@
 package org.example.service;
 
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import lombok.extern.log4j.Log4j2;
+import org.example.dto.JWTVerifyDTO;
 import org.example.dto.UserDto;
 import org.example.dto.UserLoginDTO;
 import org.example.entity.UserEntity;
@@ -19,7 +22,8 @@ import java.util.Optional;
  * Сервис загрузки информации о пользователе
  */
 @Service
-public class UserService implements UserDetailsService {
+@Log4j2
+public class UserService {
 
 
     SecretKey key = Jwts.SIG.HS512.key().build(); // or HS384 or HS256
@@ -29,22 +33,41 @@ public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository repository;
 
+
     /**
-     * Поиск пользователя по логину
-     * @param username логин пользователя
-     * @return запись пользователя
-     * @throws UsernameNotFoundException не удалось найти пользователя
+     * Метод для проверки JWT-токена
+     *
+     * @param jwtTokenDTO DTO-объект с JWT-токеном
+     * @return true, если токен действителен, иначе false
+     * https://github.com/jwtk/jjwt?tab=readme-ov-file#verification-key
+     * for docs
      */
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserEntity> user = repository.findByUsername(username);
-        return user.map(CustomUserDetails::new).orElseThrow(() -> new UsernameNotFoundException("No such user"));
+    public boolean jwtVerify(JWTVerifyDTO jwtTokenDTO) {
+        // Разделяем токен на три части по разделителю "."
+        String[] parts = jwtTokenDTO.getJwtToken().split("\\.");
+        // Если токен не состоит из трех частей, то он недействителен
+        if (parts.length != 3) {
+            return false;
+        }
+
+        try {
+            // Пытаемся проверить токен с помощью ключа
+            Jwts.parser().verifyWith(key).build().parseSignedClaims(jwtTokenDTO.getJwtToken());
+            // Если проверка прошла успешно, то токен действителен
+            return true;
+        } catch (JwtException e) {
+            // Если произошла ошибка при проверке токена, записываем ее в лог и возвращаем false
+            log.error(e.getMessage());
+            return false;
+        }
     }
 
     /**
-     * Метод для входа пользователя
-     * @param loginDto DTO-объект для входа пользователя
-     * @return токен пользователя, если вход успешен, иначе null
+     * Метод для входа пользователя в систему
+     *
+     * @param loginDto DTO-объект с данными для входа пользователя
+     * @return JWT-токен для аутентификации пользователя, если вход успешен
+     * @throws Exception если произошла ошибка при входе пользователя
      */
     public String userLogin(UserLoginDTO loginDto) {
         Optional<UserEntity> user = Optional.empty();
@@ -66,6 +89,7 @@ public class UserService implements UserDetailsService {
 
     /**
      * Регистрация нового пользователя
+     *
      * @param userDto DTO-объект пользователя
      * @throws Exception ошибка при попытке добавить пользователя с уже используемым логином или почтой
      */
