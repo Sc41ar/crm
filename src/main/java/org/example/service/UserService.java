@@ -2,10 +2,14 @@ package org.example.service;
 
 import io.jsonwebtoken.Jwts;
 import org.example.dto.UserDto;
+import org.example.dto.UserLoginDTO;
 import org.example.entity.UserEntity;
 import org.example.repository.UserRepository;
 import org.example.util.PasswodUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -30,19 +34,19 @@ public class UserService {
      * @return
      * @throws Exception
      */
-    public String userLogin(UserDto userDto) {
+    public String userLogin(UserLoginDTO loginDto) {
         Optional<UserEntity> user = Optional.empty();
-        if (userDto.getEmail() != null && !userDto.getEmail().isEmpty()) {
-            user = repository.findByEmail(userDto.getEmail());
-        } else if (userDto.getUsername() != null && !userDto.getUsername().isEmpty()) {
-            user = repository.findByUsername(userDto.getUsername());
-        }
 
-        if (user.isEmpty() || userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
+        if (loginDto.isEmail()) {
+            user = repository.findByEmail(loginDto.getEmailOrUsername());
+        }
+        user = repository.findByUsername(loginDto.getEmailOrUsername());
+
+        if (user.isEmpty()) {
             return null;
         }
 
-        if (PasswodUtils.isPasswodMatch(userDto.getPassword(), user.get().getPassword())) {
+        if (PasswodUtils.isPasswodMatch(loginDto.getPassword(), user.get().getPassword())) {
             return Jwts.builder().subject(user.get().getUsername()).signWith(key).compact();
         }
         return null;
