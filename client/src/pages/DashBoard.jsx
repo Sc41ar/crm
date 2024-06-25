@@ -1,17 +1,64 @@
-import {React, useState} from "react";
+import { React, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import  Input  from "../components/Input"
-import Button from "../components/Button"
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "../components/DropdownMenu"
-import { Card, CardHeader, CardTitle, CardContent } from "../components/Card"
-import  {Table, TableHeader, TableRow, TableHead, TableBody, TableCell}  from "../components/Table"
+import axios from "axios";
+import Input from "../components/Input";
+import Button from "../components/Button";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+} from "../components/DropdownMenu";
+import { Card, CardHeader, CardTitle, CardContent } from "../components/Card";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from "../components/Table";
 
 export default function Component() {
+  const [isVerified, setIsVerified] = useState(false);
+
+  useEffect(() => {
+    const verifyUser = async () => {
+      try {
+        await axios
+          .post(
+            "http://localhost:8080/crm/verify",
+            {},
+            { withCredentials: true }
+          )
+          .then((response) => {
+            console.log(response);
+            if (response.status == axios.HttpStatusCode.Ok) {
+              setIsVerified(true);
+            }
+          });
+      } catch (error) {
+        console.error("Error verifying user:", error);
+      }
+    };
+
+    verifyUser();
+  }, []);
+
+  if (!isVerified) {
+    return <div>Verifying user...</div>;
+  }
+
   return (
     <div className="flex justify-center h-screen w-screen">
       <nav className="flex flex-col bg-gray-900 text-gray-400 dark:bg-gray-950 dark:text-gray-400">
         <div className="flex h-16 justify-center border-b border-gray-800 dark:border-gray-800">
-          <Link href="#" className="flex items-center gap-2 text-lg font-semibold" >
+          <Link
+            href="#"
+            className="flex items-center gap-2 text-lg font-semibold"
+          >
             <Package2Icon className="h-6 w-6" />
             <span className="sr-only">CRM</span>
           </Link>
@@ -50,7 +97,7 @@ export default function Component() {
                 to="#"
                 className="flex items-center gap-3 rounded-lg px-4 py-2 hover:bg-gray-800 hover:text-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-50"
               >
-                <SquareCheckIcon className="h-5 w-5" /> 
+                <SquareCheckIcon className="h-5 w-5" />
                 <span>Tasks</span>
               </Link>
             </li>
@@ -99,7 +146,13 @@ export default function Component() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-full">
-                  <img src="/placeholder.svg" width="32" height="32" className="rounded-full" alt="Avatar" />
+                  <img
+                    src="/placeholder.svg"
+                    width="32"
+                    height="32"
+                    className="rounded-full"
+                    alt="Avatar"
+                  />
                   <span className="sr-only">Toggle user menu</span>
                 </Button>
               </DropdownMenuTrigger>
@@ -117,12 +170,16 @@ export default function Component() {
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Total Customers</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Total Customers
+                </CardTitle>
                 <UsersIcon className="h-4 w-4 text-gray-500 dark:text-gray-400" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">1,234</div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">+5.2% from last month</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  +5.2% from last month
+                </p>
               </CardContent>
             </Card>
             <Card>
@@ -132,52 +189,74 @@ export default function Component() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">234</div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">+12.8% from last month</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  +12.8% from last month
+                </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Closed Deals</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Closed Deals
+                </CardTitle>
                 <BriefcaseIcon className="h-4 w-4 text-gray-500 dark:text-gray-400" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">78</div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">+8.3% from last month</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  +8.3% from last month
+                </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Open Tasks</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Open Tasks
+                </CardTitle>
                 <SquareCheckIcon className="h-4 w-4 text-gray-500 dark:text-gray-400" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">142</div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">+3.1% from last month</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  +3.1% from last month
+                </p>
               </CardContent>
             </Card>
           </div>
           <div className="mt-6">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2 ">
-                <CardTitle className="text-sm font-medium">Recent Deals</CardTitle>
-                <Link href="#" className="text-, font-medium text-blue-500 hover:underline" prefetch={false}>
+                <CardTitle className="text-sm font-medium">
+                  Recent Deals
+                </CardTitle>
+                <Link
+                  href="#"
+                  className="text-, font-medium text-blue-500 hover:underline"
+                  prefetch={false}
+                >
                   View all
                 </Link>
               </CardHeader>
               <CardContent>
-                <Table className = "color-r-gray-50 dark:bg-gray-800 dark:border-gray-500 dark:text-gray-200"  >
+                <Table className="color-r-gray-50 dark:bg-gray-800 dark:border-gray-500 dark:text-gray-200">
                   <TableHeader>
                     <TableRow className="">
                       <TableHead className="font-semibold ">Deal</TableHead>
                       <TableHead className="font-semibold">Stage</TableHead>
                       <TableHead className="font-semibold">Amount</TableHead>
-                      <TableHead className="font-semibold">Close Date</TableHead>
+                      <TableHead className="font-semibold">
+                        Close Date
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
-                  <TableBody className="container border-b border-gray-500 dark:border-gray-800" >
+                  <TableBody className="container border-b border-gray-500 dark:border-gray-800">
                     <TableRow>
                       <TableCell className="font-medium">
-                        <Link href="#" className="hover:underline" prefetch={false}>
+                        <Link
+                          href="#"
+                          className="hover:underline"
+                          prefetch={false}
+                        >
                           Acme Inc. - Website Redesign
                         </Link>
                       </TableCell>
@@ -187,7 +266,11 @@ export default function Component() {
                     </TableRow>
                     <TableRow>
                       <TableCell className="font-medium">
-                        <Link href="#" className="hover:underline" prefetch={false}>
+                        <Link
+                          href="#"
+                          className="hover:underline"
+                          prefetch={false}
+                        >
                           Globex Corp. - ERP Implementation
                         </Link>
                       </TableCell>
@@ -197,7 +280,11 @@ export default function Component() {
                     </TableRow>
                     <TableRow>
                       <TableCell className="font-medium">
-                        <Link href="#" className="hover:underline" prefetch={false}>
+                        <Link
+                          href="#"
+                          className="hover:underline"
+                          prefetch={false}
+                        >
                           Stark Industries - CRM Upgrade
                         </Link>
                       </TableCell>
@@ -207,7 +294,11 @@ export default function Component() {
                     </TableRow>
                     <TableRow className="">
                       <TableCell className="font-medium">
-                        <Link href="#" className="hover:underline" prefetch={false}>
+                        <Link
+                          href="#"
+                          className="hover:underline"
+                          prefetch={false}
+                        >
                           Stark Industries - CRM Upgrade
                         </Link>
                       </TableCell>
@@ -223,7 +314,7 @@ export default function Component() {
         </div>
       </main>
     </div>
-  )
+  );
 }
 
 function ActivityIcon(props) {
@@ -242,9 +333,8 @@ function ActivityIcon(props) {
     >
       <path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2" />
     </svg>
-  )
+  );
 }
-
 
 function BarChart2Icon(props) {
   return (
@@ -264,7 +354,7 @@ function BarChart2Icon(props) {
       <line x1="12" x2="12" y1="20" y2="4" />
       <line x1="6" x2="6" y1="20" y2="14" />
     </svg>
-  )
+  );
 }
 
 function LogoutIcon(props) {
@@ -285,9 +375,8 @@ function LogoutIcon(props) {
       <polyline points="16 17 21 12 16 7" />
       <line x1="21" x2="9" y1="12" y2="12" />
     </svg>
-  )
+  );
 }
-
 
 function BriefcaseIcon(props) {
   return (
@@ -306,9 +395,8 @@ function BriefcaseIcon(props) {
       <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
       <rect width="20" height="14" x="2" y="6" rx="2" />
     </svg>
-  )
+  );
 }
-
 
 function LayoutGridIcon(props) {
   return (
@@ -329,9 +417,8 @@ function LayoutGridIcon(props) {
       <rect width="7" height="7" x="14" y="14" rx="1" />
       <rect width="7" height="7" x="3" y="14" rx="1" />
     </svg>
-  )
+  );
 }
-
 
 function Package2Icon(props) {
   return (
@@ -351,9 +438,8 @@ function Package2Icon(props) {
       <path d="m3 9 2.45-4.9A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.8 1.1L21 9" />
       <path d="M12 3v6" />
     </svg>
-  )
+  );
 }
-
 
 function SearchIcon(props) {
   return (
@@ -372,9 +458,8 @@ function SearchIcon(props) {
       <circle cx="11" cy="11" r="8" />
       <path d="m21 21-4.3-4.3" />
     </svg>
-  )
+  );
 }
-
 
 function SettingsIcon(props) {
   return (
@@ -393,9 +478,8 @@ function SettingsIcon(props) {
       <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
       <circle cx="12" cy="12" r="3" />
     </svg>
-  )
+  );
 }
-
 
 function SquareCheckIcon(props) {
   return (
@@ -414,9 +498,8 @@ function SquareCheckIcon(props) {
       <rect width="18" height="18" x="3" y="3" rx="2" />
       <path d="m9 12 2 2 4-4" />
     </svg>
-  )
+  );
 }
-
 
 function UsersIcon(props) {
   return (
@@ -437,5 +520,5 @@ function UsersIcon(props) {
       <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
       <path d="M16 3.13a4 4 0 0 1 0 7.75" />
     </svg>
-  )
+  );
 }

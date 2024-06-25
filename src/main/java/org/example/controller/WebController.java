@@ -6,18 +6,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import org.example.dto.JWTVerifyDTO;
 import org.example.dto.UserDto;
 import org.example.dto.UserLoginDTO;
 import org.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.springframework.http.HttpStatus.*;
 
 /**
  * Контроллер приложения
@@ -51,11 +51,11 @@ public class WebController {
             try {
                 json = mapper.writeValueAsString(errorResponse);
             } catch (JsonProcessingException ex) {
-                ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unknown error");
+                ResponseEntity.status(BAD_REQUEST).body("Unknown error");
             }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(json);
+            return ResponseEntity.status(BAD_REQUEST).body(json);
         }
-        return ResponseEntity.status(HttpStatus.OK).body("Success");
+        return ResponseEntity.status(OK).body("Success");
     }
 
     /**
@@ -65,44 +65,22 @@ public class WebController {
      * @return результат верификации
      */
     @PostMapping(path = "/verify", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> verifyUser(@Valid @RequestBody JWTVerifyDTO jwtDto) {
-        try {
-            // Вызываем метод сервиса для верификации пользователя
-            boolean isVerified = service.jwtVerify(jwtDto);
+    public ResponseEntity<String> verifyUser(@CookieValue("jwt") String jwtString) {
+        // Вызываем метод сервиса для верификации пользователя
 
-            if (isVerified) {
-                // Если пользователь успешно верифицирован, возвращаем статус 200 и сообщение об успехе
-                return ResponseEntity.status(HttpStatus.OK).body("User verified successfully");
-            } else {
-                // Если пользователь не верифицирован, возвращаем статус 401 и сообщение об ошибке
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not verified");
-            }
-            //TODO убрать try\catch мб
-        } catch (Exception e) {
-            // Если произошла ошибка, получаем сообщение об ошибке
-            String errorMessage = e.getLocalizedMessage();
-            // Создаем объект Map для хранения сообщения об ошибке
-            Map<String, String> errorResponse = new HashMap<>();
-            // Добавляем сообщение об ошибке в объект Map
-            errorResponse.put("error", errorMessage);
-            // Создаем объект ObjectMapper для преобразования объекта Map в JSON
-            ObjectMapper mapper = new ObjectMapper();
-            String json = null;
-            try {
-                // Преобразуем объект Map в JSON
-                json = mapper.writeValueAsString(errorResponse);
-            } catch (JsonProcessingException ex) {
-                // Если произошла ошибка при преобразовании в JSON, возвращаем простое сообщение об ошибке
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Неизвестная ошибка");
-            }
-            // Возвращаем HTTP-ответ с кодом 400 Bad Request и сообщением об ошибке в формате JSON
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(json);
+        boolean isVerified = service.jwtVerify(jwtString);
+
+        if (!isVerified) {
+            // Если пользователь не верифицирован, возвращаем статус 401 и сообщение об ошибке
+            return ResponseEntity.status(UNAUTHORIZED).body("User not verified");
         }
+        // Если пользователь успешно верифицирован, возвращаем статус 200 и сообщение об успехе
+        return ResponseEntity.status(OK).body("User verified successfully");
     }
 
     @PostMapping(path = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<String> loginUser(@Valid @RequestBody UserLoginDTO userLoginDTO, HttpServletResponse response) {
+    public String loginUser(@Valid @RequestBody UserLoginDTO userLoginDTO, HttpServletResponse response) {
         String jwt = "";
 
         jwt = service.userLogin(userLoginDTO);
@@ -116,10 +94,10 @@ public class WebController {
                 errorResponse.put("error", "Неверное имя пользователя или пароль");
                 String json = mapper.writeValueAsString(errorResponse);
                 // Возвращаем HTTP-ответ с кодом 401 Unauthorized и сообщением об ошибке в формате JSON
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(json);
+                return json;
             } catch (JsonProcessingException ex) {
                 // Если произошла ошибка при формировании JSON, возвращаем простое сообщение об ошибке
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Неизвестная ошибка");
+                return "Неизвестная ошибка";
             }
         }
         // Создаем новый Cookie с именем "jwt" и значением JWT токена
@@ -132,7 +110,7 @@ public class WebController {
         cookie.setPath("/");
         // Добавляем Cookie в HTTP-ответ
         response.addCookie(cookie);
-
-        return ResponseEntity.status(HttpStatus.OK).build();
+        response.setStatus(200);
+        return "succeed";
     }
 }

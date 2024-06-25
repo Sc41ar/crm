@@ -3,16 +3,12 @@ package org.example.service;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.log4j.Log4j2;
-import org.example.dto.JWTVerifyDTO;
 import org.example.dto.UserDto;
 import org.example.dto.UserLoginDTO;
 import org.example.entity.UserEntity;
 import org.example.repository.UserRepository;
 import org.example.util.PasswodUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -37,14 +33,14 @@ public class UserService {
     /**
      * Метод для проверки JWT-токена
      *
-     * @param jwtTokenDTO DTO-объект с JWT-токеном
+     * @param jwtString строка с JWT-токеном
      * @return true, если токен действителен, иначе false
+     * Документация по проверке ключа:
      * https://github.com/jwtk/jjwt?tab=readme-ov-file#verification-key
-     * for docs
      */
-    public boolean jwtVerify(JWTVerifyDTO jwtTokenDTO) {
+    public boolean jwtVerify(String jwtString) {
         // Разделяем токен на три части по разделителю "."
-        String[] parts = jwtTokenDTO.getJwtToken().split("\\.");
+        String[] parts = jwtString.split("\\.");
         // Если токен не состоит из трех частей, то он недействителен
         if (parts.length != 3) {
             return false;
@@ -52,7 +48,7 @@ public class UserService {
 
         try {
             // Пытаемся проверить токен с помощью ключа
-            Jwts.parser().verifyWith(key).build().parseSignedClaims(jwtTokenDTO.getJwtToken());
+            Jwts.parser().verifyWith(key).build().parseSignedClaims(jwtString);
             // Если проверка прошла успешно, то токен действителен
             return true;
         } catch (JwtException e) {
@@ -74,8 +70,9 @@ public class UserService {
 
         if (loginDto.isEmail()) {
             user = repository.findByEmail(loginDto.getEmailOrUsername());
+        } else {
+            user = repository.findByUsername(loginDto.getEmailOrUsername());
         }
-        user = repository.findByUsername(loginDto.getEmailOrUsername());
 
         if (user.isEmpty()) {
             return null;
