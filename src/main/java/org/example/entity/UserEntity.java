@@ -1,7 +1,10 @@
 package org.example.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * Сущность зарегистрированного пользователя
@@ -12,7 +15,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserEntity{
+public class UserEntity {
     /**
      * Идентификатор пользователя
      */
@@ -22,26 +25,26 @@ public class UserEntity{
     /**
      * Логин пользователя
      */
-    @Column
+    @Column(unique = true, nullable = false, length = 20)
     private String username;
     /**
      * Пароль
      */
-    @Column
+    @Column(nullable = false)
     private String password;
     /**
      * Роль пользователя
      */
-    @Column
+    @Column(nullable = false, length = 10)
     private String role;
     /**
      * ФИО пользователя
      */
-    @Column
+    @Column(nullable = false, length = 35)
     private String fio;
     /**
      * Электронная почта
      */
-    @Column
+    @Column(unique = true, nullable = false, length = 50)
     private String email;
 }

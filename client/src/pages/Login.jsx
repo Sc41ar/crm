@@ -1,9 +1,38 @@
+import React from "react";
 import FormBlock from "../components/FormBlock";
 import Button from "../components/Button";
 import "../index.css";
 import { Link } from "react-router-dom";
-
+import axios from "axios";
 export default function Component() {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const name = event.target.email.value;
+    const password = event.target.password.value;
+
+    axios
+      .post(
+        "http://localhost:8080/crm/login",
+        {
+          emailOrUsername: name,
+          password: password,
+        },
+        { withCredentials: true }
+      )
+      .then((response) => {
+        console.log(response);
+        if (response.status === 200) {
+          // Handle successful login
+          // Redirect to dashboard or home page
+        } else {
+          // Handle login error
+          console.error("Login failed");
+          // Show error message to user
+        }
+      });
+  };
+
   return (
     <div className="w-dvw">
       <div className="flex min-h-[100dvh] items-center justify-center  bg-gray-100 px-4 dark:bg-gray-950">
@@ -14,7 +43,7 @@ export default function Component() {
               Sign in to your account to continue.
             </p>
           </div>
-          <form className="flex flex-col">
+          <form className="flex flex-col" onSubmit={handleSubmit}>
             <FormBlock
               id="email"
               label="Email or username"

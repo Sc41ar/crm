@@ -1,14 +1,14 @@
 package org.example.service;
 
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import lombok.extern.log4j.Log4j2;
 import org.example.dto.UserDto;
+import org.example.dto.UserLoginDTO;
 import org.example.entity.UserEntity;
 import org.example.repository.UserRepository;
 import org.example.util.PasswodUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -18,7 +18,8 @@ import java.util.Optional;
  * Сервис загрузки информации о пользователе
  */
 @Service
-public class UserService implements UserDetailsService {
+@Log4j2
+public class UserService {
 
 
     SecretKey key = Jwts.SIG.HS512.key().build(); // or HS384 or HS256
@@ -28,37 +29,56 @@ public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository repository;
 
+
     /**
-     * Поиск пользователя по логину
-     * @param username логин пользователя
-     * @return запись пользователя
-     * @throws UsernameNotFoundException не удалось найти пользователя
+     * Метод для проверки JWT-токена
+     *
+     * @param jwtString строка с JWT-токеном
+     * @return true, если токен действителен, иначе false
+     * Документация по проверке ключа:
+     * https://github.com/jwtk/jjwt?tab=readme-ov-file#verification-key
      */
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserEntity> user = repository.findByUsername(username);
-        return user.map(CustomUserDetails::new).orElseThrow(() -> new UsernameNotFoundException("No such user"));
+    public boolean jwtVerify(String jwtString) {
+        // Разделяем токен на три части по разделителю "."
+        String[] parts = jwtString.split("\\.");
+        // Если токен не состоит из трех частей, то он недействителен
+        if (parts.length != 3) {
+            return false;
+        }
+
+        try {
+            // Пытаемся проверить токен с помощью ключа
+            Jwts.parser().verifyWith(key).build().parseSignedClaims(jwtString);
+            // Если проверка прошла успешно, то токен действителен
+            return true;
+        } catch (JwtException e) {
+            // Если произошла ошибка при проверке токена, записываем ее в лог и возвращаем false
+            log.error(e.getMessage());
+            return false;
+        }
     }
 
     /**
+     * Метод для входа пользователя в систему
      *
-     * @param userDto
-     * @return
-     * @throws Exception
+     * @param loginDto DTO-объект с данными для входа пользователя
+     * @return JWT-токен для аутентификации пользователя, если вход успешен
+     * @throws Exception если произошла ошибка при входе пользователя
      */
-    public String userLogin(UserDto userDto) {
+    public String userLogin(UserLoginDTO loginDto) {
         Optional<UserEntity> user = Optional.empty();
-        if (userDto.getEmail() != null && !userDto.getEmail().isEmpty()) {
-            user = repository.findByEmail(userDto.getEmail());
-        } else if (userDto.getUsername() != null && !userDto.getUsername().isEmpty()) {
-            user = repository.findByUsername(userDto.getUsername());
+
+        if (loginDto.isEmail()) {
+            user = repository.findByEmail(loginDto.getEmailOrUsername());
+        } else {
+            user = repository.findByUsername(loginDto.getEmailOrUsername());
         }
 
-        if (user.isEmpty() || userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
+        if (user.isEmpty()) {
             return null;
         }
 
-        if (PasswodUtils.isPasswodMatch(userDto.getPassword(), user.get().getPassword())) {
+        if (PasswodUtils.isPasswodMatch(loginDto.getPassword(), user.get().getPassword())) {
             return Jwts.builder().subject(user.get().getUsername()).signWith(key).compact();
         }
         return null;
@@ -66,6 +86,7 @@ public class UserService implements UserDetailsService {
 
     /**
      * Регистрация нового пользователя
+     *
      * @param userDto DTO-объект пользователя
      * @throws Exception ошибка при попытке добавить пользователя с уже используемым логином или почтой
      */
