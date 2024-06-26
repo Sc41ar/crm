@@ -19,6 +19,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -141,4 +142,13 @@ public class WebController {
         return ResponseEntity.status(HttpStatus.OK).body("Success");
     }
 
+    /**
+     * Обработка GET-запроса - Получение списка всех компаний
+     *
+     * @return список всех компаний
+     */
+    @GetMapping(path = "/company", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<CompanyDto> get() {
+        return companyService.findAll();
+    }
 }
