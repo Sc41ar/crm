@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Сервис компании
@@ -42,10 +43,40 @@ public class CompanyService {
         List<CompanyEntity> entityList = repository.findAll();
         List<CompanyDto> companyDtos = new ArrayList<>();
         for (CompanyEntity entity : entityList) {
-            companyDtos.add(CompanyDto.builder().name(entity.getName())
+            companyDtos.add(CompanyDto.builder().id(entity.getId()).name(entity.getName())
                     .phoneNumber(entity.getPhoneNumber()).email(entity.getEmail())
                     .address(entity.getAddress()).description(entity.getDescription()).build());
         }
         return companyDtos;
+    }
+
+    /**
+     * Обновление записи о компании
+     *
+     * @param companyDto DTO с заполненными полями для обновления
+     * @throws Exception не найдена запись по id
+     */
+    public void update(CompanyDto companyDto) throws Exception {
+        Optional<CompanyEntity> companyEntityOptional = repository.findById(companyDto.getId());
+        if (companyEntityOptional.isEmpty()) {
+            throw new Exception("Нет записи для обновления");
+        }
+        CompanyEntity companyEntity = companyEntityOptional.get();
+        if (companyDto.getName() != null && !companyDto.getName().trim().isEmpty()) {
+            companyEntity.setName(companyDto.getName());
+        }
+        if (companyDto.getPhoneNumber() != null && !companyDto.getPhoneNumber().trim().isEmpty()) {
+            companyEntity.setPhoneNumber(companyDto.getPhoneNumber());
+        }
+        if (companyDto.getEmail() != null && !companyDto.getEmail().trim().isEmpty()) {
+            companyEntity.setEmail(companyDto.getEmail());
+        }
+        if (companyDto.getAddress() != null && !companyDto.getAddress().trim().isEmpty()) {
+            companyEntity.setAddress(companyDto.getAddress());
+        }
+        if (companyDto.getDescription() != null && !companyDto.getDescription().trim().isEmpty()) {
+            companyEntity.setDescription(companyDto.getDescription());
+        }
+        repository.save(companyEntity);
     }
 }

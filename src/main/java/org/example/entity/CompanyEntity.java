@@ -1,10 +1,7 @@
 package org.example.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * Сущность компании
@@ -12,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "company", schema = "public")
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
