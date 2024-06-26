@@ -39,6 +39,6 @@ public class ProductDealEntity {
     /**
      * Единица измерения
      */
-    @Column(nullable = false, length = 4)
+    @Column(nullable = false, length = 5)
     private String unit;
 }

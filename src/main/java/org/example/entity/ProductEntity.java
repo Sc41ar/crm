@@ -23,7 +23,7 @@ public class ProductEntity {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     /**
      * Название продукта
      */
@@ -32,7 +32,7 @@ public class ProductEntity {
     /**
      * Единица измерения
      */
-    @Column(nullable = false, length = 4)
+    @Column(nullable = false, length = 5)
     private String unit;
     /**
      * Цена продукта за единицу измерения

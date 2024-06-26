@@ -21,7 +21,7 @@ public class ClientEntity {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     /**
      * Фамилия
      */
