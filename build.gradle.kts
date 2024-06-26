@@ -23,6 +23,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-gradle-plugin:3.3.0")
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf:3.3.0")
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation
+    implementation("org.springframework.boot:spring-boot-starter-validation:3.3.0")
     // https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
     implementation("javax.xml.bind:jaxb-api:2.3.0")
     // https://mvnrepository.com/artifact/org.projectlombok/lombok
