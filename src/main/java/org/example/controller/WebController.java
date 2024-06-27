@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.springframework.http.HttpStatus.*;
+
 /**
  * Контроллер приложения
  */
@@ -65,19 +67,39 @@ public class WebController {
             try {
                 json = mapper.writeValueAsString(errorResponse);
             } catch (JsonProcessingException ex) {
-                ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unknown error");
+                ResponseEntity.status(BAD_REQUEST).body("Unknown error");
             }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(json);
+            return ResponseEntity.status(BAD_REQUEST).body(json);
         }
-        return ResponseEntity.status(HttpStatus.OK).body("Success");
+        return ResponseEntity.status(OK).body("Success");
+    }
+
+    /**
+     * Обработка POST-запроса - Верификация пользователя
+     * Я НЕ ПРОВЕРЯЛ ПОКА, ЭТОТ МЕТОД СГЕНЕРИРОВАН
+     * @param jwtDto полученный DTO-объект пользователя для верификации
+     * @return результат верификации
+     */
+    @PostMapping(path = "/verify", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> verifyUser(@CookieValue("jwt") String jwtString) {
+        // Вызываем метод сервиса для верификации пользователя
+
+        boolean isVerified = service.jwtVerify(jwtString);
+
+        if (!isVerified) {
+            // Если пользователь не верифицирован, возвращаем статус 401 и сообщение об ошибке
+            return ResponseEntity.status(UNAUTHORIZED).body("User not verified");
+        }
+        // Если пользователь успешно верифицирован, возвращаем статус 200 и сообщение об успехе
+        return ResponseEntity.status(OK).body("User verified successfully");
     }
 
     @PostMapping(path = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<String> loginUser(@Valid @RequestBody UserDto userDto, HttpServletResponse response) {
+    public String loginUser(@Valid @RequestBody UserLoginDTO userLoginDTO, HttpServletResponse response) {
         String jwt = "";
 
-        jwt = userService.userLogin(userDto);
+        jwt = userService.userLogin(userLoginDTO);
 
         // Если JWT равен null, то возвращаем ошибку с сообщением "Неверное имя пользователя или пароль"
         if (jwt == null) {
@@ -88,10 +110,10 @@ public class WebController {
                 errorResponse.put("error", "Неверное имя пользователя или пароль");
                 String json = mapper.writeValueAsString(errorResponse);
                 // Возвращаем HTTP-ответ с кодом 401 Unauthorized и сообщением об ошибке в формате JSON
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(json);
+                return json;
             } catch (JsonProcessingException ex) {
                 // Если произошла ошибка при формировании JSON, возвращаем простое сообщение об ошибке
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Неизвестная ошибка");
+                return "Неизвестная ошибка";
             }
         }
         // Создаем новый Cookie с именем "jwt" и значением JWT токена
@@ -104,8 +126,8 @@ public class WebController {
         cookie.setPath("/");
         // Добавляем Cookie в HTTP-ответ
         response.addCookie(cookie);
-
-        return ResponseEntity.status(HttpStatus.OK).build();
+        response.setStatus(200);
+        return "succeed";
     }
 
     /**
