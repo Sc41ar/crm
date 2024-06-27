@@ -7,18 +7,19 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
-import org.example.dto.ClientDto;
-import org.example.dto.CompanyDto;
-import org.example.dto.Marker;
-import org.example.dto.UserDto;
+import org.example.dto.*;
 import org.example.service.ClientService;
 import org.example.service.CompanyService;
+import org.example.service.ProductService;
 import org.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -35,12 +36,14 @@ public class WebController {
     private final UserService userService;
     private final ClientService clientService;
     private final CompanyService companyService;
+    private final ProductService productService;
 
     @Autowired
-    public WebController(UserService userService, ClientService clientService, CompanyService companyService) {
+    public WebController(UserService userService, ClientService clientService, CompanyService companyService, ProductService productService) {
         this.userService = userService;
         this.clientService = clientService;
         this.companyService = companyService;
+        this.productService = productService;
     }
 
     /**
@@ -234,13 +237,77 @@ public class WebController {
     }
 
     /**
+     * Обработка POST-запроса - Добавление нового продукта
+     *
+     * @param productDto полученный DTO-объект продукта
+     * @return HTTP-ответ
+     */
+    @Validated({Marker.OnCreate.class})
+    @PostMapping(path = "/product/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> addProduct(@Valid @RequestBody ProductDto productDto) {
+        try {
+            productService.add(productDto);
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", errorMessage);
+            ObjectMapper mapper = new ObjectMapper();
+            String json = null;
+            try {
+                json = mapper.writeValueAsString(errorResponse);
+            } catch (JsonProcessingException ex) {
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unknown error");
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(json);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Success");
+    }
+
+    /**
+     * Обработка GET-запроса - Получение списка всех продуктов
+     *
+     * @return список всех продуктов
+     */
+    @GetMapping(path = "/product", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ProductDto> getProduct() {
+        return productService.findAll();
+    }
+
+    /**
+     * Обработка PUT-запроса - Обновление данных о продукте
+     *
+     * @param productDto DTO с заполненными полями для обновления
+     * @return HTTP-ответ
+     */
+    @Validated(Marker.OnUpdate.class)
+    @PutMapping(path = "/product/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> updateProduct(@Valid @RequestBody ProductDto productDto) {
+        try {
+            productService.update(productDto);
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", errorMessage);
+            ObjectMapper mapper = new ObjectMapper();
+            String json = null;
+            try {
+                json = mapper.writeValueAsString(errorResponse);
+            } catch (JsonProcessingException ex) {
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unknown error");
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(json);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Success");
+    }
+
+    /**
      * Обработка ошибок валидации
      *
-     * @param e ошибка валидации
+     * @param e ошибка валидации ConstraintViolationException
      * @return HTTP-ответ об ошибке
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<String> handleValidationExceptions(ConstraintViolationException e) {
+    public ResponseEntity<String> handleValidationConstraintViolationExceptions(ConstraintViolationException e) {
         Map<String, String> errorResponse = new HashMap<>();
         e.getConstraintViolations().forEach((error) -> {
             String errorMessage = error.getMessage();
@@ -248,6 +315,32 @@ public class WebController {
             errorField = errorField.substring(errorField.lastIndexOf(".") + 1);
             errorResponse.put(errorField, errorMessage);
         });
+        ObjectMapper mapper = new ObjectMapper();
+        String json = null;
+        try {
+            json = mapper.writeValueAsString(errorResponse);
+        } catch (JsonProcessingException ex) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unknown error");
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(json);
+    }
+
+    /**
+     * Обработка ошибок валидации
+     *
+     * @param e ошибка валидации MethodArgumentNotValidException
+     * @return HTTP-ответ об ошибке
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<String> handleValidationMethodArgumentNotValidExceptions(MethodArgumentNotValidException e) {
+        Map<String, String> errorResponse = new HashMap<>();
+        BindingResult result = e.getBindingResult();
+        List<FieldError> fieldErrors = result.getFieldErrors();
+        for (FieldError error : fieldErrors) {
+            String errorField = error.getField();
+            String errorMessage = error.getDefaultMessage();
+            errorResponse.put(errorField, errorMessage);
+        }
         ObjectMapper mapper = new ObjectMapper();
         String json = null;
         try {

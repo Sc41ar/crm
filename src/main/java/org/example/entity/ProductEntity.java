@@ -1,10 +1,7 @@
 package org.example.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -14,6 +11,7 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "product", schema = "public")
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

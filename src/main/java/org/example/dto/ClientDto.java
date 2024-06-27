@@ -3,6 +3,9 @@ package org.example.dto;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+/**
+ * DTO клиента
+ */
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
