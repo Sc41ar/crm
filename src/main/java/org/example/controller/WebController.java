@@ -77,14 +77,15 @@ public class WebController {
     /**
      * Обработка POST-запроса - Верификация пользователя
      * Я НЕ ПРОВЕРЯЛ ПОКА, ЭТОТ МЕТОД СГЕНЕРИРОВАН
-     * @param jwtDto полученный DTO-объект пользователя для верификации
+     *
+     * @param jwtString полученный DTO-объект пользователя для верификации
      * @return результат верификации
      */
     @PostMapping(path = "/verify", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> verifyUser(@CookieValue("jwt") String jwtString) {
         // Вызываем метод сервиса для верификации пользователя
 
-        boolean isVerified = service.jwtVerify(jwtString);
+        boolean isVerified = userService.jwtVerify(jwtString);
 
         if (!isVerified) {
             // Если пользователь не верифицирован, возвращаем статус 401 и сообщение об ошибке
