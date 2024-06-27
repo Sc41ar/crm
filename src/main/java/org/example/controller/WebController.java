@@ -7,6 +7,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
+import org.example.dto.ClientDto;
 import org.example.dto.CompanyDto;
 import org.example.dto.Marker;
 import org.example.dto.UserDto;
@@ -17,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -109,12 +109,11 @@ public class WebController {
      * Обработка POST-запроса - Добавление новой компании
      *
      * @param companyDto полученный DTO-объект компании
-     * @param result     результат валидации
      * @return HTTP-ответ
      */
     @Validated({Marker.OnCreate.class})
     @PostMapping(path = "/company/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addCompany(@Valid @RequestBody CompanyDto companyDto, BindingResult result) {
+    public ResponseEntity<String> addCompany(@Valid @RequestBody CompanyDto companyDto) {
         try {
             companyService.add(companyDto);
         } catch (Exception e) {
@@ -147,14 +146,77 @@ public class WebController {
      * Обработка PUT-запроса - Обновление данных о компании
      *
      * @param companyDto DTO с заполненными полями для обновления
-     * @param result     результат валидации
      * @return HTTP-ответ
      */
     @Validated(Marker.OnUpdate.class)
     @PutMapping(path = "/company/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> updateCompany(@Valid @RequestBody CompanyDto companyDto, BindingResult result) {
+    public ResponseEntity<String> updateCompany(@Valid @RequestBody CompanyDto companyDto) {
         try {
             companyService.update(companyDto);
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", errorMessage);
+            ObjectMapper mapper = new ObjectMapper();
+            String json = null;
+            try {
+                json = mapper.writeValueAsString(errorResponse);
+            } catch (JsonProcessingException ex) {
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unknown error");
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(json);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Success");
+    }
+
+    /**
+     * Обработка POST-запроса - Добавление нового клиента
+     *
+     * @param clientDto полученный DTO-объект клиента
+     * @return HTTP-ответ
+     */
+    @Validated({Marker.OnCreate.class})
+    @PostMapping(path = "/client/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> addClient(@Valid @RequestBody ClientDto clientDto) {
+        try {
+            clientService.add(clientDto);
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", errorMessage);
+            ObjectMapper mapper = new ObjectMapper();
+            String json = null;
+            try {
+                json = mapper.writeValueAsString(errorResponse);
+            } catch (JsonProcessingException ex) {
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unknown error");
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(json);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Success");
+    }
+
+    /**
+     * Обработка GET-запроса - Получение списка всех клиентов
+     *
+     * @return список всех клиентов
+     */
+    @GetMapping(path = "/client", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ClientDto> getClient() {
+        return clientService.findAll();
+    }
+
+    /**
+     * Обработка PUT-запроса - Обновление данных о клиенте
+     *
+     * @param clientDto DTO с заполненными полями для обновления
+     * @return HTTP-ответ
+     */
+    @Validated(Marker.OnUpdate.class)
+    @PutMapping(path = "/client/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> updateClient(@Valid @RequestBody ClientDto clientDto) {
+        try {
+            clientService.update(clientDto);
         } catch (Exception e) {
             String errorMessage = e.getMessage();
             Map<String, String> errorResponse = new HashMap<>();

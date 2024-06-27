@@ -1,10 +1,7 @@
 package org.example.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * Сущность клиента
@@ -12,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "client", schema = "public")
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -61,6 +59,5 @@ public class ClientEntity {
      * Отношение многие-к-одному с компанией
      */
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "company")
     private CompanyEntity company;
 }
