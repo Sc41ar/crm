@@ -13,6 +13,7 @@ import {
 import Button from "../components/Button";
 import axios from "axios";
 import ContactCard from "../components/ContactCard";
+import AddContactForm from "../components/AddContactForm";
 
 export default function Component() {
   const [name, setName] = useState("");
@@ -20,6 +21,7 @@ export default function Component() {
   const [phone, setPhone] = useState("");
   const [contacts, setContacts] = useState([]);
   const [companies, setCompanies] = useState([]);
+  const [showForm, setShowForm] = useState(false);
 
   const verifyUser = async () => {
     try {
@@ -162,38 +164,17 @@ export default function Component() {
               />
             </form>
 
-            <DropdownMenu
-              trigger={
-                <Button variant="outline" size="icon" className="rounded-xl">
-                  <PlusIcon className="h-5 w-5" />
-                  <span className="sr-only">Add Contact</span>
-                </Button>
-              }
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-xl"
+              OnClick={() => {
+                setShowForm(true);
+              }}
             >
-              <DropdownMenuContent>
-                <form className="p-4 space-y-4" onSubmit={handleAddUserSubmit}>
-                  <Input
-                    type="text"
-                    placeholder="Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                  <Input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                  <Input
-                    type="tel"
-                    placeholder="Phone"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                  />
-                  <Button type="submit">Create User</Button>
-                </form>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              <PlusIcon className="h-5 w-5" />
+            </Button>
+            {showForm && <AddContactForm onClose={() => setShowForm(false)} />}
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
