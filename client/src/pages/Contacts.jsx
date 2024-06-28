@@ -19,6 +19,7 @@ export default function Component() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [contacts, setContacts] = useState([]);
+  const [companies, setCompanies] = useState([]);
 
   const verifyUser = async () => {
     try {
@@ -28,6 +29,7 @@ export default function Component() {
           console.log(response);
           if (response.status == axios.HttpStatusCode.Ok) {
             getClients();
+            getCompanies();
           }
         });
     } catch (error) {
@@ -44,6 +46,17 @@ export default function Component() {
     try {
       await axios.get("http://localhost:8080/crm/client").then((response) => {
         setContacts(response.data);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getCompanies = async () => {
+    try {
+      await axios.get("http://localhost:8080/crm/company").then((response) => {
+        console.log(response.data);
+        setCompanies(response.data);
       });
     } catch (error) {
       console.log(error);
@@ -211,6 +224,14 @@ export default function Component() {
               <ContactCard
                 key={contact.id}
                 contact={contact}
+                ClassName="w-full bg-white dark:bg-gray-800 shadow rounded-lg p-4"
+              />
+            ))}
+
+            {companies.map((company) => (
+              <ContactCard
+                key={company.id}
+                contact={company}
                 ClassName="w-full bg-white dark:bg-gray-800 shadow rounded-lg p-4"
               />
             ))}

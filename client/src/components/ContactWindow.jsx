@@ -30,7 +30,10 @@ const ContactWindow = ({ user, onClose }) => {
                   className="text-lg leading-6 font-medium text-gray-900"
                   id="modal-title"
                 >
-                  {user.lastName + " " + user.name + " " + user.middleName}
+                  {(user.lastName ? user.lastName + " " : "") +
+                    user.name +
+                    " " +
+                    (user.middleName ? user.middleName + " " : "")}
                 </h3>
                 <div className="mt-2">
                   <p className="text-sm text-gray-500">
