@@ -37,6 +37,8 @@ export default function Component() {
 
       if (response.status === axios.HttpStatusCode.Ok) {
         alert("Registration successful");
+        sessionStorage.setItem("loginInfo", username);
+        window.location.href = "/";
         // Redirect to login page or dashboard
       } else {
         alert("Registration failed: " + response.data.message);
