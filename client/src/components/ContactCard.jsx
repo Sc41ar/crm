@@ -42,7 +42,7 @@ const ContactCard = ({ contact, ClassName }) => {
         </Avatar>
         <div>
           <h3 className="text-lg font-medium">
-            {contact.lastName + " " + contact.name}
+            {contact.lastName ? contact.lastName + " " : ""} { contact.name}
           </h3>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             {contact.phoneNumber}
