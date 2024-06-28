@@ -16,13 +16,14 @@ const AddContactForm = ({ onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = "http://localhost:8080/crm/client/add";
+    let url = "http://localhost:8080/crm/client/add";
     try {
-      const data = {
-        email,
-        phone,
-        address,
-        description,
+      let data = {
+        name: name,
+        email: email,
+        phoneNumber: phone,
+        address: address,
+        description: description,
       };
       if (option === "person") {
         data.name = name;
@@ -33,6 +34,8 @@ const AddContactForm = ({ onClose }) => {
         url = "http://localhost:8080/crm/company/add";
         data.name = companyName;
       }
+      console.log(name);
+      console.log(data);
       const response = await axios.post(url, data);
       console.log(response);
       onClose();
@@ -59,8 +62,8 @@ const AddContactForm = ({ onClose }) => {
         >
           &#8203;
         </span>
-        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-          <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <div className="inline-block align-bottom bg-slate-300 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+          <div className="bg-slate-200 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div className="sm:flex sm:items-start">
               <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                 <h3
@@ -70,7 +73,10 @@ const AddContactForm = ({ onClose }) => {
                   Add Contact
                 </h3>
                 <div className="mt-2">
-                  <form className="p-4 space-y-4" onSubmit={handleSubmit}>
+                  <form
+                    className="p-4 space-y-6 space-x-1"
+                    onSubmit={handleSubmit}
+                  >
                     <div className="flex items-center space-x-2">
                       <label className="inline-flex items-center">
                         <input
@@ -81,9 +87,9 @@ const AddContactForm = ({ onClose }) => {
                           onChange={(e) => setOption(e.target.value)}
                           className="form-radio text-blue-500"
                         />
-                        <span className="ml-2">Person</span>
+                        <span className="ml-2 text-slate-600">Person</span>
                       </label>
-                      <label className="inline-flex items-center">
+                      <label className="inline-flex items-center  ">
                         <input
                           type="radio"
                           name="option"
@@ -92,31 +98,29 @@ const AddContactForm = ({ onClose }) => {
                           onChange={(e) => setOption(e.target.value)}
                           className="form-radio text-blue-500"
                         />
-                        <span className="ml-2">Company</span>
+                        <span className="ml-2 text-slate-600">Company</span>
                       </label>
                     </div>
                     {option === "person" ? (
                       <>
                         <Input
-                          type="text"
                           placeholder="Name"
                           value={name}
-                          onChange={(e) => setName(e.target.value)}
+                          onChange={(e) => {
+                            setName(e.target.value);
+                          }}
                         />
                         <Input
-                          type="text"
                           placeholder="Last Name"
                           value={lastName}
                           onChange={(e) => setLastName(e.target.value)}
                         />
                         <Input
-                          type="text"
                           placeholder="Middle Name"
                           value={middleName}
                           onChange={(e) => setMiddleName(e.target.value)}
                         />
                         <Input
-                          type="text"
                           placeholder="Company Name"
                           value={companyName}
                           onChange={(e) => setCompanyName(e.target.value)}
@@ -124,43 +128,45 @@ const AddContactForm = ({ onClose }) => {
                       </>
                     ) : (
                       <Input
-                        type="text"
                         placeholder="Company Name"
                         value={companyName}
                         onChange={(e) => setCompanyName(e.target.value)}
                       />
                     )}
                     <Input
-                      type="email"
                       placeholder="Email"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                      }}
                     />
                     <Input
-                      type="tel"
                       placeholder="Phone"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                     />
                     <Input
-                      type="text"
                       placeholder="Address"
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
                     />
                     <Input
-                      type="text"
                       placeholder="Description"
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                     />
-                    <Button type="submit">Create Contact</Button>
+                    <Button
+                      type="submit"
+                      className="w-2/3 place-content-center place-self-stretch rounded-lg bg-indigo-800 hover:bg-violet-900 hover:border-rose-950 hover:border-2 hover:border-r-2"
+                    >
+                      Create Contact
+                    </Button>
                   </form>
                 </div>
               </div>
             </div>
           </div>
-          <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+          <div className="bg-slate-300 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
             <button
               type="button"
               className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-gray-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:ml-3 sm:w-auto sm:text-sm"
