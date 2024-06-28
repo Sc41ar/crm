@@ -1,3 +1,4 @@
+import { React, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./Avatar";
 import Button from "./Button";
 import {
@@ -7,12 +8,22 @@ import {
   DropdownMenuTrigger,
 } from "./DropdownMenu";
 import { Card } from "./Card";
+import ContactWindow from "./ContactWindow";
 
-const ContactCard = ({ name, title, ClassName }) => {
+const ContactCard = ({ contact, ClassName }) => {
+  const [showContactWindow, setShowContactWindow] = useState(false);
+  const handleUserClick = () => {
+    setShowContactWindow(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowContactWindow(false);
+  };
+
   return (
     <Card className={ClassName}>
-      <div className="flex items-center gap-4">
-        <Avatar className="h-12 w-12 rounded-full">
+      <div className="flex items-center gap-1">
+        <Avatar className="h-1/4 w-1/4 rounded-full">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -27,26 +38,28 @@ const ContactCard = ({ name, title, ClassName }) => {
               d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
             />
           </svg>
-          <AvatarFallback>{name.split(" ")[0]}</AvatarFallback>
+          <AvatarFallback>{}</AvatarFallback>
         </Avatar>
         <div>
-          <h3 className="text-lg font-medium">{name}</h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400">{title}</p>
+          <h3 className="text-lg font-medium">
+            {contact.lastName + " " + contact.name}
+          </h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            {contact.phoneNumber}
+          </p>
         </div>
       </div>
       <div className="mt-4 flex justify-between">
         <Button
-          variant="outline"
-          size="sm"
-          className="text-blue-500 hover:text-blue-700 hover:bg-blue-100 focus:ring-blue-500 focus:ring-2"
+          className="text-blue-500 hover:text-blue-700 hover:bg-blue-100 focus:ring-blue-500 focus:ring-2 rounded-xl"
+          OnClick={handleUserClick}
         >
           View
         </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          className="text-blue-500 hover:text-blue-700 hover:bg-blue-100 focus:ring-blue-500 focus:ring-2"
-        >
+        {showContactWindow && (
+          <ContactWindow user={contact} onClose={handleCloseModal} />
+        )}
+        <Button className="text-blue-500 hover:text-blue-700 hover:bg-blue-100 focus:ring-blue-500 focus:ring-2 rounded-xl">
           Edit
         </Button>
 
@@ -55,7 +68,7 @@ const ContactCard = ({ name, title, ClassName }) => {
             <Button
               variant="outline"
               size="sm"
-              className="text-blue-500 hover:text-blue-700 hover:bg-blue-100 focus:ring-blue-500 focus:ring-2"
+              className="text-blue-500 hover:text-blue-700 hover:bg-blue-100 focus:ring-blue-500 focus:ring-2 rounded-xl"
             >
               <MoveVerticalIcon className="h-5 w-5" />
               <span className="sr-only">More options</span>

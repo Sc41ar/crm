@@ -1,6 +1,7 @@
 import { React, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Input from "../components/Input";
+import ConctactWindows from "../components/ContactWindow";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -14,33 +15,40 @@ import axios from "axios";
 import ContactCard from "../components/ContactCard";
 
 export default function Component() {
-  const [isVerified, setIsVerified] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [contacts, setContacts] = useState([]);
+
+  const verifyUser = async () => {
+    try {
+      await axios
+        .post("http://localhost:8080/crm/verify", {}, { withCredentials: true })
+        .then((response) => {
+          console.log(response);
+          if (response.status == axios.HttpStatusCode.Ok) {
+            getClients();
+          }
+        });
+    } catch (error) {
+      console.error(error);
+      window.location.href = "/login";
+    }
+  };
 
   useEffect(() => {
-    const verifyUser = async () => {
-      try {
-        await axios
-          .post(
-            "http://localhost:8080/crm/verify",
-            {},
-            { withCredentials: true }
-          )
-          .then((response) => {
-            console.log(response);
-            if (response.status == axios.HttpStatusCode.Ok) {
-              setIsVerified(true);
-            }
-          });
-      } catch (error) {
-        window.location.href = "/login";
-      }
-    };
-
     verifyUser();
   }, []);
+
+  const getClients = async () => {
+    try {
+      await axios.get("http://localhost:8080/crm/client").then((response) => {
+        setContacts(response.data);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleAddUserSubmit = async (e) => {
     e.preventDefault();
@@ -58,13 +66,12 @@ export default function Component() {
   };
 
   return (
-    <div className="flex h-screen w-full">
+    <div className="flex h-screen w-screen">
       <nav className="flex flex-col bg-gray-900 text-gray-400 dark:bg-gray-950 dark:text-gray-400">
         <div className="flex h-16 items-center justify-center border-b border-gray-800 dark:border-gray-800">
           <Link
             href="#"
             className="flex items-center gap-2 text-lg font-semibold"
-            prefetch={false}
           >
             <Package2Icon className="h-6 w-6" />
             <span className="sr-only">CRM</span>
@@ -94,7 +101,6 @@ export default function Component() {
               <Link
                 href="#"
                 className="flex items-center gap-3 rounded-lg px-4 py-2 hover:bg-gray-800 hover:text-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-50"
-                prefetch={false}
               >
                 <BriefcaseIcon className="h-5 w-5" />
                 <span>Deals</span>
@@ -134,8 +140,8 @@ export default function Component() {
         <header className="flex h-16 items-center justify-between border-b bg-white px-6 dark:border-gray-800 dark:bg-gray-950">
           <h1 className="text-lg font-medium">Contacts</h1>
           <div className="flex items-center gap-4">
-            <form lassName="flex items-center space-x-2">
-              <SearchIcon className=" text-gray-500 dark:text-gray-400" />
+            <form className="flex items-center space-x-2">
+              <SearchIcon className="text-gray-500 dark:text-gray-400" />
               <Input
                 type="search"
                 placeholder="Search contacts..."
@@ -145,7 +151,7 @@ export default function Component() {
 
             <DropdownMenu
               trigger={
-                <Button variant="outline" size="icon" className="rounded-full">
+                <Button variant="outline" size="icon" className="rounded-xl">
                   <PlusIcon className="h-5 w-5" />
                   <span className="sr-only">Add Contact</span>
                 </Button>
@@ -201,16 +207,13 @@ export default function Component() {
         </header>
         <div className="p-6">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            <ContactCard name="Jogn Doe" title="CEO Acme inc." />
-            <ContactCard
-              name="Bob Smith"
-              title="Marketing Manager, Globex Corp."
-            />
-            <ContactCard name="Ivan " title="sales representative" />
-            <ContactCard
-              name="Sarah Lee"
-              title="HR Coordinator, StarkIndustries"
-            />
+            {contacts.map((contact) => (
+              <ContactCard
+                key={contact.id}
+                contact={contact}
+                ClassName="w-full bg-white dark:bg-gray-800 shadow rounded-lg p-4"
+              />
+            ))}
           </div>
         </div>
       </main>
