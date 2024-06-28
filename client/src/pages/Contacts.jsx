@@ -117,8 +117,8 @@ export default function Component() {
         <header className="flex h-16 items-center justify-between border-b bg-white px-6 dark:border-gray-800 dark:bg-gray-950">
           <h1 className="text-lg font-medium">Contacts</h1>
           <div className="flex items-center gap-4">
-            <form className="relative">
-              <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
+            <form className="flex flex-row">
+              <SearchIcon className=" text-gray-500 dark:text-gray-400" />
               <Input
                 type="search"
                 placeholder="Search contacts..."
