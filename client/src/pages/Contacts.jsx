@@ -15,6 +15,9 @@ import ContactCard from "../components/ContactCard";
 
 export default function Component() {
   const [isVerified, setIsVerified] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
 
   useEffect(() => {
     const verifyUser = async () => {
@@ -32,13 +35,27 @@ export default function Component() {
             }
           });
       } catch (error) {
-        console.error("Error verifying user:", error);
         window.location.href = "/login";
       }
     };
 
     verifyUser();
   }, []);
+
+  const handleAddUserSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:8080/crm/contacts", {
+        name,
+        email,
+        phone,
+      });
+      console.log(response);
+      // Add any additional logic here, such as closing the dropdown menu or resetting the form fields
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className="flex h-screen w-full">
@@ -125,6 +142,40 @@ export default function Component() {
                 className="pl-8 pr-4 h-9 rounded-md bg-gray-100 dark:bg-gray-800 dark:text-gray-50"
               />
             </form>
+
+            <DropdownMenu
+              trigger={
+                <Button variant="outline" size="icon" className="rounded-full">
+                  <PlusIcon className="h-5 w-5" />
+                  <span className="sr-only">Add Contact</span>
+                </Button>
+              }
+            >
+              <DropdownMenuContent>
+                <form className="p-4 space-y-4" onSubmit={handleAddUserSubmit}>
+                  <Input
+                    type="text"
+                    placeholder="Name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                  <Input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  <Input
+                    type="tel"
+                    placeholder="Phone"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                  <Button type="submit">Create User</Button>
+                </form>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-full">
@@ -186,6 +237,25 @@ export default function Component() {
       </svg>
     );
   }
+}
+
+function PlusIcon(props) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      className="size-6"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M12 4.5v15m7.5-7.5h-15"
+      />
+    </svg>
+  );
 }
 
 function BarChart2Icon(props) {

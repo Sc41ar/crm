@@ -23,6 +23,7 @@ export default function Component() {
       .then((response) => {
         console.log(response);
         if (response.status === 200) {
+          sessionStorage.setItem("loginInfo", name);
           // Handle successful login
           // Redirect to dashboard or home page
           window.location.href = "/";
