@@ -9,8 +9,10 @@ import {
 } from "./DropdownMenu";
 import { Card } from "./Card";
 import ContactWindow from "./ContactWindow";
+import UpdateContactForm from "./UpdateContactForm";
 
 const ContactCard = ({ contact, ClassName }) => {
+  const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [showContactWindow, setShowContactWindow] = useState(false);
   const handleUserClick = () => {
     setShowContactWindow(true);
@@ -61,7 +63,7 @@ const ContactCard = ({ contact, ClassName }) => {
             {contact.lastName ? contact.lastName + " " : ""} {contact.name}
           </h3>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            {contact.phoneNumber}
+            {contact.description}
           </p>
         </div>
       </div>
@@ -75,9 +77,21 @@ const ContactCard = ({ contact, ClassName }) => {
         {showContactWindow && (
           <ContactWindow user={contact} onClose={handleCloseModal} />
         )}
-        <Button className="text-blue-500 hover:text-blue-700 hover:bg-blue-100 focus:ring-blue-500 focus:ring-2 rounded-xl">
+        <Button
+          className="text-blue-500 hover:text-blue-700 hover:bg-blue-100 focus:ring-blue-500 focus:ring-2 rounded-xl"
+          OnClick={() => {
+            setShowUpdateForm(true);
+          }}
+        >
           Edit
         </Button>
+        {showUpdateForm && (
+          <UpdateContactForm
+            onClose={() => {
+              setShowUpdateForm(false);
+            }}
+          />
+        )}
 
         <DropdownMenu
           trigger={
