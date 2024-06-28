@@ -25,10 +25,12 @@ export default function Component() {
         if (response.status === 200) {
           // Handle successful login
           // Redirect to dashboard or home page
+          window.location.href = "/";
         } else {
           // Handle login error
           console.error("Login failed");
           // Show error message to user
+          alert("Login failed. Please check your credentials and try again.");
         }
       });
   };
