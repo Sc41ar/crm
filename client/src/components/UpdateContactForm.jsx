@@ -11,7 +11,7 @@ const EditContactForm = ({ onClose, contactId }) => {
     e.preventDefault();
     let url = `http://localhost:8080/crm/client/update`;
     try {
-      const data = { [field]: value };
+      const data = { id: contactId, [field]: value };
       const response = await axios.put(url, data);
       console.log(response);
       onClose();
