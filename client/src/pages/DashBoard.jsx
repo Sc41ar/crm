@@ -23,7 +23,21 @@ import {
 } from "../components/Table";
 
 export default function Component() {
-  const [isVerified, setIsVerified] = useState(false);
+  const [costumersNumber, setCostumersNumber] = useState(0);
+
+  const getClients = async () => {
+    let personNumber = 0;
+    try {
+      await axios.get("http://localhost:8080/crm/client").then((response) => {
+        personNumber = response.data.length;
+      });
+      await axios.get("http://localhost:8080/crm/company").then((response) => {
+        setCostumersNumber(personNumber + response.data.length);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     const verifyUser = async () => {
@@ -37,7 +51,6 @@ export default function Component() {
           .then((response) => {
             console.log(response);
             if (response.status == axios.HttpStatusCode.Ok) {
-              setIsVerified(true);
             }
           });
       } catch (error) {
@@ -47,10 +60,8 @@ export default function Component() {
     };
 
     verifyUser();
+    getClients();
   }, []);
-
-  // if (!isVerified) {
-  // }
 
   return (
     <div className="flex justify-center h-screen w-screen">
@@ -169,7 +180,7 @@ export default function Component() {
         </header>
         <div className="p-6">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <Card>
+            <Card className="w-full bg-white dark:bg-gray-800 shadow rounded-lg p-4">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">
                   Total Customers
@@ -177,13 +188,13 @@ export default function Component() {
                 <UsersIcon className="h-4 w-4 text-gray-500 dark:text-gray-400" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">1,234</div>
+                <div className="text-2xl font-bold">{costumersNumber}</div>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  +5.2% from last month
+                  +0.0% from last month
                 </p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="w-full bg-white dark:bg-gray-800 shadow rounded-lg p-4">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">New Leads</CardTitle>
                 <ActivityIcon className="h-4 w-4 text-gray-500 dark:text-gray-400" />
@@ -195,7 +206,7 @@ export default function Component() {
                 </p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="w-full bg-white dark:bg-gray-800 shadow rounded-lg p-4">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">
                   Closed Deals
@@ -209,7 +220,7 @@ export default function Component() {
                 </p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="w-full bg-white dark:bg-gray-800 shadow rounded-lg p-4">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">
                   Open Tasks
@@ -225,7 +236,7 @@ export default function Component() {
             </Card>
           </div>
           <div className="mt-6">
-            <Card>
+            <Card className="w-full bg-white dark:bg-gray-800 shadow rounded-lg p-4">
               <CardHeader className="flex flex-row items-center justify-between pb-2 ">
                 <CardTitle className="text-sm font-medium">
                   Recent Deals
