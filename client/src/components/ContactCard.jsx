@@ -87,6 +87,7 @@ const ContactCard = ({ contact, ClassName }) => {
         </Button>
         {showUpdateForm && (
           <UpdateContactForm
+            contactId={contact.id}
             onClose={() => {
               setShowUpdateForm(false);
             }}
