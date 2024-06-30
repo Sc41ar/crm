@@ -13,12 +13,31 @@ const AddContactForm = ({ onClose }) => {
   const [address, setAddress] = useState("");
   const [description, setDescription] = useState("");
   const [companyName, setCompanyName] = useState("");
+  const [emailError, setEmailError] = useState(false);
+  const [phoneError, setPhoneError] = useState(false);
 
-  const checkCompany = async (companyName) => {};
+  const checkEmail = (email) => {
+    const emailRegex = /^[a-zA-Z0-9.-_]+@([a-zA-Z0-9]+\.)+[a-zA-Z0-9-]+$/;
+    return emailRegex.test(email);
+  };
+
+  const checkPhone = (phone) => {
+    const phoneRegex = /^\+7\d{10}$/;
+    return phoneRegex.test(phone);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     let url = "http://localhost:8080/crm/client/add";
+
+    if (!checkEmail(email) || !checkPhone(phone)) {
+      setEmailError(true);
+      setPhoneError(true);
+      return;
+    }
+    setEmailError(false);
+    setPhoneError(false);
+
     try {
       let data = {
         name: name,
@@ -46,7 +65,7 @@ const AddContactForm = ({ onClose }) => {
         setOption("company");
         forceUpdate();
       }
-      console.error(error);
+      alert(error.response.data.error);
     }
   };
 
@@ -145,11 +164,21 @@ const AddContactForm = ({ onClose }) => {
                       onChange={(e) => {
                         setEmail(e.target.value);
                       }}
+                      className={
+                        emailError
+                          ? "border-red-500 hover:dark:bg-red-900 border-spacing-5 border-2"
+                          : " "
+                      }
                     />
                     <Input
                       placeholder="Phone"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
+                      className={
+                        phoneError
+                          ? "border-red-500 hover:dark:bg-red-900 border-spacing-5 border-2"
+                          : " "
+                      }
                     />
                     <Input
                       placeholder="Address"
