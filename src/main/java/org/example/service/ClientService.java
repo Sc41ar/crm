@@ -39,8 +39,10 @@ public class ClientService {
                 .name(clientDto.getName()).middleName(clientDto.getMiddleName())
                 .email(clientDto.getEmail()).phoneNumber(clientDto.getPhoneNumber()).address(clientDto.getAddress())
                 .description(clientDto.getDescription()).build();
-        if (clientDto.getIdCompany() != null) {
-            Optional<CompanyEntity> companyEntity = companyRepository.findById(clientDto.getIdCompany());
+        if (clientDto.getIdCompany() != null || clientDto.getCompanyName() != null) {
+            Optional<CompanyEntity> companyEntity = (clientDto.getIdCompany() != null) ?
+                    companyRepository.findById(clientDto.getIdCompany()) :
+                    companyRepository.findByName(clientDto.getCompanyName());
             if (companyEntity.isEmpty()) {
                 throw new Exception("Не найдена запись о компании");
             } else {

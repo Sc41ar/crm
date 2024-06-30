@@ -158,6 +158,28 @@ public class WebController {
         return ResponseEntity.status(HttpStatus.OK).body("Success");
     }
 
+    @GetMapping(path = "/company/name", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public CompanyDto getCompanyByName(@RequestParam("name") String name, HttpServletResponse response) {
+        CompanyDto companyDto = null;
+        try {
+            companyDto = companyService.findByName(name);
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", errorMessage);
+            ObjectMapper mapper = new ObjectMapper();
+            String json = null;
+            try {
+                json = mapper.writeValueAsString(errorResponse);
+            } catch (JsonProcessingException ex) {
+                response.setStatus(500);
+                return null;
+            }
+        }
+        return companyDto;
+    }
+
     /**
      * Обработка GET-запроса - Получение списка всех компаний
      *

@@ -28,7 +28,6 @@ export default function Component() {
       await axios
         .post("http://localhost:8080/crm/verify", {}, { withCredentials: true })
         .then((response) => {
-          console.log(response);
           if (response.status == axios.HttpStatusCode.Ok) {
             getClients();
             getCompanies();
@@ -57,7 +56,6 @@ export default function Component() {
   const getCompanies = async () => {
     try {
       await axios.get("http://localhost:8080/crm/company").then((response) => {
-        console.log(response.data);
         setCompanies(response.data);
       });
     } catch (error) {
@@ -74,7 +72,6 @@ export default function Component() {
         phone,
       });
       console.log(response);
-      // Add any additional logic here, such as closing the dropdown menu or resetting the form fields
     } catch (error) {
       console.error(error);
     }
@@ -151,7 +148,7 @@ export default function Component() {
           </ul>
         </div>
       </nav>
-      <main className="flex-1 bg-gray-100 dark:bg-gray-950">
+      <main className=" flex-1 bg-gray-100 dark:bg-gray-950 ">
         <header className="flex h-16 items-center justify-between border-b bg-white px-6 dark:border-gray-800 dark:bg-gray-950">
           <h1 className="text-lg font-medium">Contacts</h1>
           <div className="flex items-center gap-4">
@@ -199,23 +196,25 @@ export default function Component() {
             </DropdownMenu>
           </div>
         </header>
-        <div className="p-6">
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {contacts.map((contact) => (
-              <ContactCard
-                key={contact.id}
-                contact={contact}
-                ClassName="w-full bg-white dark:bg-gray-800 shadow rounded-lg p-4"
-              />
-            ))}
+        <div className="p-6 w-full h-screen overflow-y-auto">
+          <div className="overflow-y-auto h-fit min-h-3.5">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ">
+              {contacts.map((contact) => (
+                <ContactCard
+                  key={contact.id}
+                  contact={contact}
+                  ClassName="w-full bg-white dark:bg-gray-800 shadow rounded-lg p-4"
+                />
+              ))}
 
-            {companies.map((company) => (
-              <ContactCard
-                key={company.id}
-                contact={company}
-                ClassName="w-full bg-white dark:bg-gray-800 shadow rounded-lg p-4"
-              />
-            ))}
+              {companies.map((company) => (
+                <ContactCard
+                  key={company.id}
+                  contact={company}
+                  ClassName="w-full bg-white dark:bg-gray-800 shadow rounded-lg p-4"
+                />
+              ))}
+            </div>
           </div>
         </div>
       </main>

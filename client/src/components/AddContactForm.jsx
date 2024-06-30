@@ -14,6 +14,8 @@ const AddContactForm = ({ onClose }) => {
   const [description, setDescription] = useState("");
   const [companyName, setCompanyName] = useState("");
 
+  const checkCompany = async (companyName) => {};
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     let url = "http://localhost:8080/crm/client/add";
@@ -34,12 +36,16 @@ const AddContactForm = ({ onClose }) => {
         url = "http://localhost:8080/crm/company/add";
         data.name = companyName;
       }
-      console.log(name);
-      console.log(data);
       const response = await axios.post(url, data);
       console.log(response);
+
       onClose();
     } catch (error) {
+      if (error.response.data.error === "Не найдена запись о компании") {
+        alert("Записи о данной компании не существует, создайте запись");
+        setOption("company");
+        forceUpdate();
+      }
       console.error(error);
     }
   };

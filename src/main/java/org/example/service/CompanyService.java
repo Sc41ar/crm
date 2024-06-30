@@ -50,6 +50,17 @@ public class CompanyService {
         return companyDtos;
     }
 
+    public CompanyDto findByName(String name) throws Exception {
+        Optional<CompanyEntity> companyEntityOptional = repository.findByName(name);
+        if (companyEntityOptional.isEmpty()) {
+            throw new Exception("Нет записи для обновления");
+        }
+        CompanyEntity companyEntity = companyEntityOptional.get();
+        return CompanyDto.builder().id(companyEntity.getId()).name(companyEntity.getName())
+                .phoneNumber(companyEntity.getPhoneNumber()).email(companyEntity.getEmail())
+                .address(companyEntity.getAddress()).description(companyEntity.getDescription()).build();
+    }
+
     /**
      * Обновление записи о компании
      *
