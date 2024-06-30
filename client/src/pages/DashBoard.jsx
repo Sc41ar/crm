@@ -97,7 +97,7 @@ export default function Component() {
             </li>
             <li>
               <Link
-                to="#"
+                to="/deals"
                 className="flex items-center gap-3 rounded-lg px-4 py-2 hover:bg-gray-800 hover:text-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-50"
               >
                 <BriefcaseIcon className="h-5 w-5" />

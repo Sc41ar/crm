@@ -7,6 +7,7 @@ import Singup from "./pages/Signup";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Contacts from "./pages/Contacts";
+import Deals from "./pages/Deals";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
   {
     path: "/contacts",
     element: <Contacts />,
+  },
+  {
+    path: "/deals",
+    element: <Deals />,
   },
   {
     path: "*",
