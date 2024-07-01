@@ -14,7 +14,7 @@ import java.util.Optional;
  * Сервис продуктов
  */
 @Service
-public class ProductService {
+public class ProductService implements ServiceInterface<ProductDto> {
     /**
      * Репозиторий для записей о продуктах
      */
@@ -26,7 +26,7 @@ public class ProductService {
      *
      * @param productDto DTO-объект продукта
      */
-
+    @Override
     public void add(ProductDto productDto) {
         ProductEntity productEntity = ProductEntity.builder().name(productDto.getName())
                 .unit(productDto.getUnit()).unitPrice(productDto.getUnitPrice()).build();
@@ -39,6 +39,7 @@ public class ProductService {
      * @param productDto DTO с заполненными полями для обновления
      * @throws Exception не найдена запись по id
      */
+    @Override
     public void update(ProductDto productDto) throws Exception {
         Optional<ProductEntity> productEntityOptional = productRepository.findById(productDto.getId());
         if (productEntityOptional.isEmpty()) {
@@ -62,6 +63,7 @@ public class ProductService {
      *
      * @return список из DTO-объектов продуктов
      */
+    @Override
     public List<ProductDto> findAll() {
         List<ProductEntity> entityList = productRepository.findAll();
         List<ProductDto> productDtos = new ArrayList<>();

@@ -16,7 +16,7 @@ import java.util.Optional;
  * Сервис клиента
  */
 @Service
-public class ClientService {
+public class ClientService implements ServiceInterface<ClientDto> {
     /**
      * Репозиторий для записей о клиентах
      */
@@ -34,6 +34,7 @@ public class ClientService {
      * @param clientDto DTO-объект клиента
      * @throws Exception ошибка внешнего ключа
      */
+    @Override
     public void add(ClientDto clientDto) throws Exception {
         ClientEntity clientEntity = ClientEntity.builder().lastName(clientDto.getLastName())
                 .name(clientDto.getName()).middleName(clientDto.getMiddleName())
@@ -56,6 +57,7 @@ public class ClientService {
      * @param clientDto DTO с заполненными полями для обновления
      * @throws Exception ошибка внешнего ключа или не найдена запись по id
      */
+    @Override
     public void update(ClientDto clientDto) throws Exception {
         Optional<ClientEntity> clientEntityOptional = clientRepository.findById(clientDto.getId());
         if (clientEntityOptional.isEmpty()) {
@@ -97,6 +99,7 @@ public class ClientService {
      *
      * @return список из DTO-объектов клиентов
      */
+    @Override
     public List<ClientDto> findAll() {
         List<ClientEntity> entityList = clientRepository.findAll();
         List<ClientDto> clientDtos = new ArrayList<>();

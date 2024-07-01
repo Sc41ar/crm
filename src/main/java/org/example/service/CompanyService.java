@@ -14,7 +14,7 @@ import java.util.Optional;
  * Сервис компании
  */
 @Service
-public class CompanyService {
+public class CompanyService implements ServiceInterface<CompanyDto> {
     /**
      * Репозиторий для записей о компании
      */
@@ -26,7 +26,7 @@ public class CompanyService {
      *
      * @param companyDto DTO-объект компании
      */
-
+    @Override
     public void add(CompanyDto companyDto) {
         CompanyEntity companyEntity = CompanyEntity.builder().name(companyDto.getName())
                 .phoneNumber(companyDto.getPhoneNumber()).email(companyDto.getEmail())
@@ -39,6 +39,7 @@ public class CompanyService {
      *
      * @return список из DTO-объектов компаний
      */
+    @Override
     public List<CompanyDto> findAll() {
         List<CompanyEntity> entityList = repository.findAll();
         List<CompanyDto> companyDtos = new ArrayList<>();
@@ -56,6 +57,7 @@ public class CompanyService {
      * @param companyDto DTO с заполненными полями для обновления
      * @throws Exception не найдена запись по id
      */
+    @Override
     public void update(CompanyDto companyDto) throws Exception {
         Optional<CompanyEntity> companyEntityOptional = repository.findById(companyDto.getId());
         if (companyEntityOptional.isEmpty()) {

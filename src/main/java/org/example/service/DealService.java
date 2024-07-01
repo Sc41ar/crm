@@ -18,7 +18,7 @@ import java.util.Optional;
  * Сервис сделок
  */
 @Service
-public class DealService {
+public class DealService implements ServiceInterface<DealDto> {
     /**
      * Репозиторий для записей о сделках
      */
@@ -41,6 +41,7 @@ public class DealService {
      * @param dealDto DTO-объект сделки
      * @throws Exception ошибка внешнего ключа
      */
+    @Override
     public void add(DealDto dealDto) throws Exception {
         DealEntity dealEntity = DealEntity.builder().name(dealDto.getName())
                 .stage(dealDto.getStage()).type(dealDto.getType())
@@ -74,6 +75,7 @@ public class DealService {
      * @param dealDto DTO с заполненными полями для обновления
      * @throws Exception не найдена запись по id или ошибка внешнего ключа
      */
+    @Override
     public void update(DealDto dealDto) throws Exception {
         Optional<DealEntity> dealEntityOptional = dealRepository.findById(dealDto.getId());
         if (dealEntityOptional.isEmpty()) {
@@ -115,6 +117,7 @@ public class DealService {
      *
      * @return список всех сделок
      */
+    @Override
     public List<DealDto> findAll() {
         List<DealDto> dealDtos = new ArrayList<>();
         List<DealEntity> entityList = dealRepository.findAll();
