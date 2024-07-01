@@ -12,11 +12,11 @@ import Tasks from "./pages/Tasks";
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/", 
     element: <DashBoard />,
   },
   {
-    path: "/signup",
+    path: "/signup", 
     element: <Singup />,
   },
   {
