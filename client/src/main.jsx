@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Contacts from "./pages/Contacts";
 import Deals from "./pages/Deals";
+import Tasks from "./pages/Tasks";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
   {
     path: "/deals",
     element: <Deals />,
+  },
+  {
+    path: "/tasks",
+    element: <Tasks />,
   },
   {
     path: "*",
