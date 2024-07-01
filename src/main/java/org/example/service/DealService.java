@@ -22,18 +22,22 @@ public class DealService implements ServiceInterface<DealDto> {
     /**
      * Репозиторий для записей о сделках
      */
-    @Autowired
-    private DealRepository dealRepository;
+    private final DealRepository dealRepository;
     /**
      * Репозиторий для записей о компании
      */
-    @Autowired
-    private ClientRepository clientRepository;
+    private final ClientRepository clientRepository;
     /**
      * Репозиторий для записей о пользователе
      */
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserRepository userRepository;
+    public DealService(DealRepository dealRepository, ClientRepository clientRepository, UserRepository userRepository) {
+        this.dealRepository = dealRepository;
+        this.clientRepository = clientRepository;
+        this.userRepository = userRepository;
+    }
 
     /**
      * Добавление новой сделки

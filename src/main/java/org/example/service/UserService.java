@@ -22,12 +22,17 @@ import java.util.Optional;
 public class UserService {
 
 
-    SecretKey key = Jwts.SIG.HS512.key().build(); // or HS384 or HS256
     /**
      * Репозиторий для записей о пользователях
      */
+
+    private final UserRepository repository;
+    SecretKey key = Jwts.SIG.HS512.key().build(); // or HS384 or HS256
+
     @Autowired
-    private UserRepository repository;
+    public UserService(UserRepository repository) {
+        this.repository = repository;
+    }
 
 
     /**
