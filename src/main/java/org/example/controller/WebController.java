@@ -118,8 +118,8 @@ public class WebController {
         }
         // Создаем новый Cookie с именем "jwt" и значением JWT токена
         Cookie cookie = new Cookie("jwt", jwt);
-        // Устанавливаем время жизни Cookie в 900 секунд (15 минут)
-        cookie.setMaxAge(900);
+        // Устанавливаем время жизни Cookie в 16200 секунд (4.5 часа )
+        cookie.setMaxAge(16200);
         // Устанавливаем флаг HttpOnly, чтобы Cookie не был доступен через JavaScript
         cookie.setHttpOnly(true);
         // Устанавливаем путь, на котором Cookie будет доступен (в данном случае - корневой путь)
