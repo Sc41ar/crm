@@ -54,12 +54,12 @@ public class TaskEntity {
     /**
      * Дата и время последнего обновления задачи
      */
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @Column(name = "expires_at")
+    private LocalDateTime expiresAt;
 
     /**
      * Дата и время удаления задачи
      */
-    @Column(name = "deleted_at")
-    private LocalDateTime deletedAt;
+    @Column(name = "deadline")
+    private LocalDateTime deadline;
 }
