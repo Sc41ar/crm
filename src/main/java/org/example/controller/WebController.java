@@ -8,10 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import org.example.dto.*;
-import org.example.service.ClientService;
-import org.example.service.CompanyService;
-import org.example.service.ProductService;
-import org.example.service.UserService;
+import org.example.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -39,13 +36,15 @@ public class WebController {
     private final ClientService clientService;
     private final CompanyService companyService;
     private final ProductService productService;
+    private final DealService dealService;
 
     @Autowired
-    public WebController(UserService userService, ClientService clientService, CompanyService companyService, ProductService productService) {
+    public WebController(UserService userService, ClientService clientService, CompanyService companyService, ProductService productService, DealService dealService) {
         this.userService = userService;
         this.clientService = clientService;
         this.companyService = companyService;
         this.productService = productService;
+        this.dealService = dealService;
     }
 
     /**
@@ -137,9 +136,8 @@ public class WebController {
      * @param companyDto полученный DTO-объект компании
      * @return HTTP-ответ
      */
-    @Validated({Marker.OnCreate.class})
     @PostMapping(path = "/company/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addCompany(@Valid @RequestBody CompanyDto companyDto) {
+    public ResponseEntity<String> addCompany(@Validated({Marker.OnCreate.class}) @RequestBody CompanyDto companyDto) {
         try {
             companyService.add(companyDto);
         } catch (Exception e) {
@@ -174,9 +172,8 @@ public class WebController {
      * @param companyDto DTO с заполненными полями для обновления
      * @return HTTP-ответ
      */
-    @Validated(Marker.OnUpdate.class)
     @PutMapping(path = "/company/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> updateCompany(@Valid @RequestBody CompanyDto companyDto) {
+    public ResponseEntity<String> updateCompany(@Validated(Marker.OnUpdate.class) @RequestBody CompanyDto companyDto) {
         try {
             companyService.update(companyDto);
         } catch (Exception e) {
@@ -302,11 +299,83 @@ public class WebController {
      * @param productDto DTO с заполненными полями для обновления
      * @return HTTP-ответ
      */
-    @Validated(Marker.OnUpdate.class)
     @PutMapping(path = "/product/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> updateProduct(@Valid @RequestBody ProductDto productDto) {
+    public ResponseEntity<String> updateProduct(@Validated(Marker.OnUpdate.class) @RequestBody ProductDto productDto) {
         try {
             productService.update(productDto);
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", errorMessage);
+            ObjectMapper mapper = new ObjectMapper();
+            String json = null;
+            try {
+                json = mapper.writeValueAsString(errorResponse);
+            } catch (JsonProcessingException ex) {
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unknown error");
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(json);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Success");
+    }
+
+    /**
+     * Обработка POST-запроса - Добавление новой сделки
+     *
+     * @param dealDto полученный DTO-объект сделки
+     * @return HTTP-ответ
+     */
+    @Validated({Marker.OnCreate.class})
+    @PostMapping(path = "/deal/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> addDeal(@Valid @RequestBody DealDto dealDto) {
+        try {
+            dealService.add(dealDto);
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", errorMessage);
+            ObjectMapper mapper = new ObjectMapper();
+            String json = null;
+            try {
+                json = mapper.writeValueAsString(errorResponse);
+            } catch (JsonProcessingException ex) {
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unknown error");
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(json);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Success");
+    }
+
+    /**
+     * Обработка GET-запроса - Получение списка всех сделок
+     *
+     * @return список всех сделок
+     */
+    @GetMapping(path = "/deal", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<DealDto> getDeal() {
+        return dealService.findAll();
+    }
+
+    /**
+     * Обработка GET-запроса - Получение списка сделок сотрудника
+     *
+     * @return список всех сделок сотрудника
+     */
+    @GetMapping(path = "/deal/get", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<DealDto> getDealByUsername(@Valid @RequestBody DealDto dealDto) {
+        return dealService.findByUsername(dealDto.getUserUsername());
+    }
+
+    /**
+     * Обработка PUT-запроса - Обновление данных о сделке
+     *
+     * @param dealDto DTO с заполненными полями для обновления
+     * @return HTTP-ответ
+     */
+    @PutMapping(path = "/deal/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> updateDeal(@Validated(Marker.OnUpdate.class) @RequestBody DealDto dealDto) {
+        try {
+            dealService.update(dealDto);
         } catch (Exception e) {
             String errorMessage = e.getMessage();
             Map<String, String> errorResponse = new HashMap<>();
