@@ -2,7 +2,7 @@ package org.example.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.example.enumeration.unit.TaskStatus;
+import org.example.enumeration.TaskStatus;
 
 import java.time.LocalDateTime;
 

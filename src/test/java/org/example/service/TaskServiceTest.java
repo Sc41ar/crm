@@ -1,7 +1,7 @@
 package org.example.service;
 
 import org.example.dto.TaskDto;
-import org.example.enumeration.unit.TaskStatus;
+import org.example.enumeration.TaskStatus;
 import org.example.repository.TaskRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package org.example.enumeration.unit;
+package org.example.enumeration;
 
 public enum TaskStatus {
     TODO,
