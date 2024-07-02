@@ -25,7 +25,7 @@ public class UserEntity {
     /**
      * Логин пользователя
      */
-    @Column(unique = true, nullable = false, length = 20)
+    @Column(name = "username", unique = true, nullable = false, length = 20)
     private String username;
     /**
      * Пароль

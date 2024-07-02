@@ -1,10 +1,7 @@
 package org.example.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.example.enumeration.unit.TaskStatus;
 
 import java.time.LocalDateTime;
@@ -18,6 +15,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class TaskEntity {
     /**
      * Идентификатор задачи
@@ -37,6 +35,12 @@ public class TaskEntity {
      */
     @Column(name = "description")
     private String description;
+
+    /**
+     * Автор задачи
+     */
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    private UserEntity author;
 
     /**
      * Статус задачи
