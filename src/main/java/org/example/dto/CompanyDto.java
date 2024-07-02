@@ -28,12 +28,14 @@ public class CompanyDto {
     /**
      * Номер телефона
      */
+    @NotBlank(message = "Phone number cannot be empty", groups = Marker.OnCreate.class)
     @Pattern(message = "Phone number is not valid", regexp = "^\\+7\\d{10}$", groups = Marker.OnCreate.class)
     @PhoneNumberIfNotBlank(groups = Marker.OnUpdate.class)
     private String phoneNumber;
     /**
      * Электронная почта
      */
+    @NotBlank(message = "Email cannot be empty", groups = Marker.OnCreate.class)
     @Email(message = "Email is not valid", regexp = "^[\\w-_\\.]+@([\\w]+\\.)+[\\w-]+$", groups = Marker.OnCreate.class)
     @EmailIfNotBlank(groups = Marker.OnUpdate.class)
     private String email;
