@@ -30,7 +30,7 @@ public class ProductEntity {
     /**
      * Единица измерения
      */
-    @Column(nullable = false, length = 5)
+    @Column(nullable = false, length = 8)
     private String unit;
     /**
      * Цена продукта за единицу измерения

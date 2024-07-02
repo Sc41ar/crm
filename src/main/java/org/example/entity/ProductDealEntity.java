@@ -4,10 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -17,6 +14,7 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "product_deal", schema = "public")
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,20 +23,20 @@ public class ProductDealEntity {
      * Составной первичный ключ
      */
     @EmbeddedId
-    private ProductDealPK pk;
+    private ProductDealPK id;
     /**
-     * Количество товаров
+     * Количество продуктов
      */
     @Column(nullable = false, precision = 10, scale = 3)
     private BigDecimal quantity;
     /**
-     * Стоимость товаров
+     * Стоимость продуктов
      */
     @Column(nullable = false, precision = 11, scale = 2)
     private BigDecimal cost;
     /**
      * Единица измерения
      */
-    @Column(nullable = false, length = 5)
+    @Column(nullable = false, length = 8)
     private String unit;
 }

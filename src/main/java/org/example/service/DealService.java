@@ -10,6 +10,7 @@ import org.example.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -49,7 +50,7 @@ public class DealService implements ServiceInterface<DealDto> {
     public void add(DealDto dealDto) throws Exception {
         DealEntity dealEntity = DealEntity.builder().name(dealDto.getName())
                 .stage(dealDto.getStage()).type(dealDto.getType())
-                .startDate(dealDto.getStartDate()).endDate(dealDto.getEndDate()).build();
+                .startDate(dealDto.getStartDate()).endDate(dealDto.getEndDate()).totalCost(BigDecimal.ZERO).build();
         if (dealDto.getClientId() != null) {
             Optional<ClientEntity> clientEntity = clientRepository.findById(dealDto.getClientId());
             if (clientEntity.isEmpty()) {
