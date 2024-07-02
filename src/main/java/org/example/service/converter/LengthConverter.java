@@ -2,6 +2,9 @@ package org.example.service.converter;
 
 import java.math.BigDecimal;
 
+/**
+ * Конвертер для единиц длины
+ */
 public class LengthConverter extends UnitConverter {
     public LengthConverter() {
         super();

@@ -2,6 +2,9 @@ package org.example.service.converter;
 
 import java.math.BigDecimal;
 
+/**
+ * Конвертер для единиц объема
+ */
 public class VolumeConverter extends UnitConverter {
     public VolumeConverter() {
         super();

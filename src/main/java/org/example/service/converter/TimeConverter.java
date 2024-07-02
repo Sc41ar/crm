@@ -2,6 +2,9 @@ package org.example.service.converter;
 
 import java.math.BigDecimal;
 
+/**
+ * Ковертер для единиц времени
+ */
 public class TimeConverter extends UnitConverter {
     public TimeConverter() {
         super();
