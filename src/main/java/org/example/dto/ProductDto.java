@@ -37,6 +37,6 @@ public class ProductDto {
      * Цена за единицу измерения
      */
     @NotNull(message = "Price cannot be null", groups = Marker.OnCreate.class)
-    @Positive(message = "Price cannot be negative or equal to 0")
+    @Positive(message = "Price cannot be negative or equal to 0", groups = Marker.OnCreate.class)
     private BigDecimal unitPrice;
 }

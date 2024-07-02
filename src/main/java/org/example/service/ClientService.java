@@ -20,13 +20,17 @@ public class ClientService implements ServiceInterface<ClientDto> {
     /**
      * Репозиторий для записей о клиентах
      */
-    @Autowired
-    private ClientRepository clientRepository;
+    private final ClientRepository clientRepository;
     /**
      * Репозиторий для записей о компании
      */
+    private final CompanyRepository companyRepository;
+
     @Autowired
-    private CompanyRepository companyRepository;
+    public ClientService(ClientRepository clientRepository, CompanyRepository companyRepository) {
+        this.clientRepository = clientRepository;
+        this.companyRepository = companyRepository;
+    }
 
     /**
      * Добавление нового клиента

@@ -18,8 +18,12 @@ public class CompanyService implements ServiceInterface<CompanyDto> {
     /**
      * Репозиторий для записей о компании
      */
+    private final CompanyRepository repository;
+
     @Autowired
-    private CompanyRepository repository;
+    public CompanyService(CompanyRepository repository) {
+        this.repository = repository;
+    }
 
     /**
      * Добавление новой компании

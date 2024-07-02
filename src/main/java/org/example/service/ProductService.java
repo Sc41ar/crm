@@ -18,8 +18,13 @@ public class ProductService implements ServiceInterface<ProductDto> {
     /**
      * Репозиторий для записей о продуктах
      */
+
+    private final ProductRepository repository;
+
     @Autowired
-    ProductRepository productRepository;
+    public ProductService(ProductRepository repository) {
+        this.repository = repository;
+    }
 
     /**
      * Добавление нового клиента
@@ -30,7 +35,7 @@ public class ProductService implements ServiceInterface<ProductDto> {
     public void add(ProductDto productDto) {
         ProductEntity productEntity = ProductEntity.builder().name(productDto.getName())
                 .unit(productDto.getUnit()).unitPrice(productDto.getUnitPrice()).build();
-        productRepository.save(productEntity);
+        repository.save(productEntity);
     }
 
     /**
@@ -41,7 +46,7 @@ public class ProductService implements ServiceInterface<ProductDto> {
      */
     @Override
     public void update(ProductDto productDto) throws Exception {
-        Optional<ProductEntity> productEntityOptional = productRepository.findById(productDto.getId());
+        Optional<ProductEntity> productEntityOptional = repository.findById(productDto.getId());
         if (productEntityOptional.isEmpty()) {
             throw new Exception("Нет записи для обновления");
         }
@@ -55,7 +60,7 @@ public class ProductService implements ServiceInterface<ProductDto> {
         if (productDto.getUnitPrice() != null) {
             productEntity.setUnitPrice(productDto.getUnitPrice());
         }
-        productRepository.save(productEntity);
+        repository.save(productEntity);
     }
 
     /**
@@ -65,7 +70,7 @@ public class ProductService implements ServiceInterface<ProductDto> {
      */
     @Override
     public List<ProductDto> findAll() {
-        List<ProductEntity> entityList = productRepository.findAll();
+        List<ProductEntity> entityList = repository.findAll();
         List<ProductDto> productDtos = new ArrayList<>();
         for (ProductEntity entity : entityList) {
             productDtos.add(ProductDto.builder().id(entity.getId()).name(entity.getName())
