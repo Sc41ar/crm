@@ -118,4 +118,24 @@ public class TaskService implements ServiceInterface<TaskDto> {
         taskRepository.save(taskEntity);
         return taskDto;
     }
+
+    public List<TaskDto> findByEmail(String email) {
+        List<TaskEntity> entityList = taskRepository.findByAuthorEmail(email);
+        List<TaskDto> taskDtos = new ArrayList<>();
+        for (TaskEntity entity : entityList) {
+            TaskDto taskDto = TaskDto.builder()
+                    .id(entity.getId())
+                    .name(entity.getName())
+                    .description(entity.getDescription())
+                    .status(entity.getStatus())
+                    .userId(entity.getAuthor().getId())
+                    .username(entity.getAuthor().getUsername())
+                    .createdAt(entity.getCreatedAt())
+                    .expiresAt(entity.getExpiresAt())
+                    .deadline(entity.getDeadline()).build();
+            taskDtos.add(taskDto);
+        }
+
+        return taskDtos;
+    }
 }

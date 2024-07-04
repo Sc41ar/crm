@@ -49,12 +49,17 @@ public class TaskController {
         }
     }
 
+
     @GetMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public List<TaskDto> getAllTasks(@RequestParam("username") String username, HttpServletResponse response) {
         try {
             response.setStatus(HttpServletResponse.SC_OK);
-            return taskService.findByUsername(username);
+            if (username.contains("@")) {
+                return taskService.findByEmail(username);
+            } else {
+                return taskService.findByUsername(username);
+            }
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return null;

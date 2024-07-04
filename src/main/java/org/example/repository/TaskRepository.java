@@ -13,4 +13,6 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Long> {
     Optional<TaskEntity> findByName(String name);
 
     List<TaskEntity> findByAuthorUsername(String username);
+
+    List<TaskEntity> findByAuthorEmail(String email);
 }
