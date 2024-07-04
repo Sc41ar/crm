@@ -24,10 +24,10 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @Validated({Marker.OnCreate.class})
+
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public void addTask(@Valid @RequestBody TaskDto taskDto, HttpServletResponse response) {
+    public void addTask(@Validated({Marker.OnCreate.class}) @RequestBody TaskDto taskDto, HttpServletResponse response) {
         try {
             response.setStatus(HttpServletResponse.SC_OK);
             taskService.add(taskDto);

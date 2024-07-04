@@ -1,26 +1,52 @@
 import React, { useState } from "react";
 import { Card } from "./Card";
 
-export function Tabs({ children, className }) {
-  const [activeTab, setActiveTab] = useState(children[0].props.label);
+export function Tabs({ children, className, defaultValue }) {
+  const [activeTab, setActiveTab] = useState(defaultValue);
 
   return (
     <div className={className}>
       <TabsList>
-        {children.map((child) => (
-          <TabsTrigger
-            key={child.props.label}
-            value={child.props.label}
-            onClick={setActiveTab}
-          >
-            {child.props.label}
-          </TabsTrigger>
-        ))}
+        <TabsTrigger
+          value="all"
+          onClick={() => setActiveTab("all")}
+          isActive={activeTab === "all"}
+        >
+          All
+        </TabsTrigger>
+        <TabsTrigger
+          value="todo"
+          onClick={() => setActiveTab("todo")}
+          isActive={activeTab === "todo"}
+        >
+          To-Do
+        </TabsTrigger>
+        <TabsTrigger
+          value="inProgress"
+          onClick={() => setActiveTab("inProgress")}
+          isActive={activeTab === "inProgress"}
+        >
+          In Progress
+        </TabsTrigger>
+        <TabsTrigger
+          value="completed"
+          onClick={() => setActiveTab("completed")}
+          isActive={activeTab === "completed"}
+        >
+          Completed
+        </TabsTrigger>
       </TabsList>
       <TabsContent>
         {children.map((child) => {
-          if (child.props.label === activeTab) {
-            return <Card key={child.props.label}>{child.props.children}</Card>;
+          if (child.type === TabsContent && child.props.value === activeTab) {
+            return (
+              <TabsContent
+                key={child.props.value}
+                className={child.props.className}
+              >
+                {child.props.children}
+              </TabsContent>
+            );
           }
           return null;
         })}
@@ -31,15 +57,20 @@ export function Tabs({ children, className }) {
 
 export function Tab({ label, children, className }) {
   return (
-    <TabsTrigger className={className} value={label}>
+    <TabsTrigger
+      key={child.props.label}
+      onClick={() => setActiveTab(child.props.label)}
+      className={className}
+      value={label}
+    >
       {children}
     </TabsTrigger>
   );
 }
 
-export function TabsContent({ children, className }) {
+export function TabsContent({ children, className, value }) {
   return (
-    <div className={`p-4 bg-white rounded-b-lg  ${className}`}>{children}</div>
+    <div className={`p-4 bg-white rounded-b-lg ${className}`}>{children}</div>
   );
 }
 
@@ -47,20 +78,13 @@ export function TabsList({ children, className }) {
   return <div className={className}>{children}</div>;
 }
 
-export function TabsTrigger({ children, value, onClick }) {
-  const [activeTab, setActiveTab] = useState(null);
-
+export function TabsTrigger({ children, value, onClick, isActive }) {
   return (
     <button
       className={`py-2 px-4 rounded-t-lg ${
-        value === activeTab
-          ? "bg-blue-500 text-white"
-          : "text-gray-500 hover:bg-gray-100"
+        isActive ? "bg-blue-500 text-white" : "text-gray-500"
       }`}
-      onClick={() => {
-        setActiveTab(value);
-        onClick(value);
-      }}
+      onClick={onClick}
     >
       {children}
     </button>

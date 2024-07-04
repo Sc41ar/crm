@@ -52,7 +52,7 @@ public class TaskDto {
      * Дата создания задачи.
      * Не должна быть пустой при создании новой задачи.
      */
-    @NotBlank(message = "дата создания не должна быть пустой", groups = Marker.OnCreate.class)
+    @NotNull(message = "дата создания не должна быть пустой", groups = Marker.OnCreate.class)
     private LocalDateTime createdAt;
 
     /**
@@ -79,6 +79,6 @@ public class TaskDto {
      * Крайний срок выполнения задачи. Может быть не строгим.
      * Не должен быть пустым при создании новой задачи.
      */
-    @NotBlank(message = "срок выполнения не должен быть пустым", groups = Marker.OnCreate.class)
+    @NotNull(message = "срок выполнения не должен быть пустым", groups = Marker.OnCreate.class)
     private LocalDateTime deadline;
 }

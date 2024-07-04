@@ -186,7 +186,6 @@ export default function Component() {
                   />
                   <span className="sr-only">Toggle user menu</span>
                 </Button>
-              </DropdownMenuTrigger>
               }
             >
               <DropdownMenuContent align="end">

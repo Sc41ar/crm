@@ -27,16 +27,52 @@ import {
   TabsList,
   TabsTrigger,
 } from "../components/Tabs";
+import AddTaskForm from "../components/AddTaskForm";
+
+const mockTasks = [
+  {
+    id: 1,
+    title: "Finish project proposal",
+    description:
+      "Write up the project proposal for the client and submit by the end of the week.",
+    dueDate: "April 30, 2023",
+    status: "TODO",
+    completed: false,
+  },
+  {
+    id: 2,
+    title: "Review code changes",
+    description:
+      "Review the code changes submitted by the team and provide feedback.",
+    dueDate: "May 5, 2023",
+    status: "INprocess",
+    completed: false,
+  },
+  // Add more tasks as needed
+];
 
 export default function Component() {
+  const [tasks, setTasks] = useState(mockTasks);
+  const [selectedButton, setSelectedButton] = useState("All Tasks");
+  const [isAddTaskFormVisible, setIsAddTaskFormVisible] = useState(false);
+  const [filteredTasks, setFilteredTasks] = useState(tasks);
+
+  function filterTasks(status) {
+    setSelectedButton(status);
+    if (status === "All Tasks") {
+      setFilteredTasks(tasks); // Show all tasks
+    } else {
+      setFilteredTasks(tasks.filter((task) => task.status === status));
+    }
+  }
+
   const verifyUser = async () => {
     try {
       await axios
         .post("http://localhost:8080/crm/verify", {}, { withCredentials: true })
         .then((response) => {
           if (response.status == axios.HttpStatusCode.Ok) {
-            // getClients();
-            // getCompanies();
+            getTasks();
           }
         });
     } catch (error) {
@@ -49,6 +85,53 @@ export default function Component() {
     verifyUser();
   }, []);
 
+  async function setTaskStatus(task, status) {
+    try {
+      await axios
+        .patch(`http://localhost:8080/task/status`, {
+          id: task.id,
+          status: status,
+        })
+        .then((response) => {})
+        .catch((error) => {});
+      if (response.status == axios.HttpStatusCode.Ok) {
+        getTasks();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  function getTasks() {
+    try {
+      axios
+        .get("http://localhost:8080/task/all", {
+          params: {
+            username: sessionStorage.getItem("loginInfo"),
+          },
+        })
+        .then((response) => {
+          if (response.status == axios.HttpStatusCode.Ok) {
+            setTasks(response.data);
+            console.log(tasks[0].description);
+          }
+        });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const handleTaskCompletion = (id) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task
+      )
+    );
+  };
+  const handleTaskAdd = () => {
+    setIsAddTaskFormVisible(true);
+  };
+
   return (
     <div className="flex h-screen w-screen">
       <nav className="flex flex-col bg-gray-900 text-gray-400 dark:bg-gray-950 dark:text-gray-400">
@@ -56,7 +139,6 @@ export default function Component() {
           <Link
             href="/"
             className="flex items-center gap-2 text-lg font-semibold"
-            prefetch={false}
           >
             <Package2Icon className="h-6 w-6" />
             <span className="sr-only">CRM</span>
@@ -68,7 +150,6 @@ export default function Component() {
               <Link
                 to="/"
                 className="flex items-center gap-3 rounded-lg px-4 py-2 hover:bg-gray-800 hover:text-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-50"
-                prefetch={false}
               >
                 <LayoutGridIcon className="h-5 w-5" />
                 <span>Dashboard</span>
@@ -78,7 +159,6 @@ export default function Component() {
               <Link
                 to="/contacts"
                 className="flex items-center gap-3 rounded-lg px-4 py-2 hover:bg-gray-800 hover:text-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-50"
-                prefetch={false}
               >
                 <UsersIcon className="h-5 w-5" />
                 <span>Contacts</span>
@@ -88,7 +168,6 @@ export default function Component() {
               <Link
                 to="/deals"
                 className="flex items-center gap-3 rounded-lg px-4 py-2 hover:bg-gray-800 hover:text-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-50"
-                prefetch={false}
               >
                 <BriefcaseIcon className="h-5 w-5" />
                 <span>Deals</span>
@@ -98,7 +177,6 @@ export default function Component() {
               <Link
                 to="/tasks"
                 className="flex items-center gap-3 rounded-lg px-4 py-2 bg-gray-800 text-gray-50 dark:bg-gray-800 dark:text-gray-50"
-                prefetch={false}
               >
                 <SquareCheckIcon className="h-5 w-5" />
                 <span>Tasks</span>
@@ -108,7 +186,6 @@ export default function Component() {
               <Link
                 to="/messanger"
                 className="flex items-center gap-3 rounded-lg px-4 py-2 hover:bg-gray-800 hover:text-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-50"
-                prefetch={false}
               >
                 <MessangerIcon className="h-5 w-5" />
                 <span>Messanger</span>
@@ -118,7 +195,6 @@ export default function Component() {
               <Link
                 to="/logout"
                 className="flex items-center gap-3 rounded-lg px-4 py-2 hover:bg-gray-800 hover:text-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-50"
-                prefetch={false}
               >
                 <LogoutIcon className="h-5 w-5" />
                 <span>Logout</span>
@@ -165,63 +241,94 @@ export default function Component() {
         </header>
         <div>
           <div className="grid gap-4">
-            <div className="flex items-center justify-end p-4">
-              <Button>
+            <div className="flex items-center justify-start p-4">
+              <div className="flex space-x-4 p-4">
+                <Button
+                  variant="outline"
+                  OnClick={() => filterTasks("All Tasks")}
+                  className={
+                    selectedButton === "AllTasks"
+                      ? "bg-blue-500 text-white"
+                      : ""
+                  }
+                >
+                  All Tasks
+                </Button>
+                <Button
+                  variant="outline"
+                  OnClick={() => filterTasks("TODO")}
+                  className={
+                    selectedButton === "TODO" ? "bg-blue-500 text-white" : ""
+                  }
+                >
+                  TODO
+                </Button>
+                <Button
+                  variant="outline"
+                  OnClick={() => filterTasks("IN_PROGRESS")}
+                  className={
+                    selectedButton === "IN_PROGRESS"
+                      ? "bg-blue-500 text-white"
+                      : ""
+                  }
+                >
+                  In Progress
+                </Button>
+                <Button
+                  variant="outline"
+                  OnClick={() => filterTasks("COMPLETED")}
+                  className={
+                    selectedButton === "COMPLETED"
+                      ? "bg-blue-500 text-white"
+                      : ""
+                  }
+                >
+                  Completed
+                </Button>
+              </div>
+              <Button className="rounded-full" OnClick={handleTaskAdd}>
                 <PlusIcon className="h-4 w-4 mr-2" />
                 Add Task
               </Button>
+              {isAddTaskFormVisible && (
+                <AddTaskForm onClose={() => setIsAddTaskFormVisible(false)} />
+              )}
             </div>
-            <Tabs defaultValue="all" className="">
-              <TabsList className="flex items-center gap-4 ">
-                <TabsTrigger value="all">All</TabsTrigger>
-                <TabsTrigger value="todo">To-Do</TabsTrigger>
-                <TabsTrigger value="inProgress">In Progress</TabsTrigger>
-                <TabsTrigger value="completed">Completed</TabsTrigger>
-              </TabsList>
-              <TabsContent value="all" className="">
-                <div className="grid gap-4 text-slate-950">
-                  <Card className="bg-slate-200 rounded-md shadow shadow-md space-x-2">
-                    <CardHeader className="">
-                      <CardTitle className="p-2">
-                        Finish project proposal
-                      </CardTitle>
-                      <CardDescription>
-                        Write up the project proposal for the client and submit
-                        by the end of the week.
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="p-2 m-4">
-                      <div className="flex items-center justify-between">
-                        <div className="text-sm text-muted-foreground">
-                          Due: April 30, 2023
-                        </div>
-                        <Badge variant="secondary">To-Do</Badge>
-                      </div>
-                    </CardContent>
-                    <CardFooter>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="rounded-md"
-                        >
-                          <CheckIcon className="h-4 w-4" />
-                          Mark as Complete
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="rounded-md"
-                        >
-                          <FilePenIcon className="h-4 w-4" />
-                          Edit
-                        </Button>
-                      </div>
-                    </CardFooter>
-                  </Card>
-                </div>
-              </TabsContent>
-            </Tabs>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-2">
+              {filteredTasks.map((task) => (
+                <Card
+                  key={task.id}
+                  className={`${
+                    task.completed ? "opacity-50" : ""
+                  } bg-slate-700 rounded-lg p-2`}
+                >
+                  <CardHeader>
+                    <CardTitle className="uppercase font-bold text-lg">
+                      {task.name}
+                    </CardTitle>
+                    <CardDescription>{task.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p>{task.description}</p>
+                    <p>От: {new Date(task.createdAt).toLocaleString()}</p>
+                    <p>До: {new Date(task.deadline).toLocaleString()}</p>
+                    <p>
+                      Неактуально после:{" "}
+                      {new Date(task.expiresAt).toLocaleString()}
+                    </p>
+                  </CardContent>
+                  <CardFooter>
+                    <Button
+                      variant={task.completed ? "secondary" : "primary"}
+                      className="rounded-lg"
+                      OnClick={() => handleTaskCompletion(task.id)}
+                    >
+                      {task.completed ? "Undo" : "Complete"}
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
           </div>
         </div>
       </main>
