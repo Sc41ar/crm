@@ -29,30 +29,8 @@ import {
 } from "../components/Tabs";
 import AddTaskForm from "../components/AddTaskForm";
 
-const mockTasks = [
-  {
-    id: 1,
-    title: "Finish project proposal",
-    description:
-      "Write up the project proposal for the client and submit by the end of the week.",
-    dueDate: "April 30, 2023",
-    status: "TODO",
-    completed: false,
-  },
-  {
-    id: 2,
-    title: "Review code changes",
-    description:
-      "Review the code changes submitted by the team and provide feedback.",
-    dueDate: "May 5, 2023",
-    status: "INprocess",
-    completed: false,
-  },
-  // Add more tasks as needed
-];
-
 export default function Component() {
-  const [tasks, setTasks] = useState(mockTasks);
+  const [tasks, setTasks] = useState([]);
   const [selectedButton, setSelectedButton] = useState("All Tasks");
   const [isAddTaskFormVisible, setIsAddTaskFormVisible] = useState(false);
   const [filteredTasks, setFilteredTasks] = useState(tasks);
@@ -60,6 +38,7 @@ export default function Component() {
   function filterTasks(status) {
     setSelectedButton(status);
     if (status === "All Tasks") {
+      getTasks();
       setFilteredTasks(tasks); // Show all tasks
     } else {
       setFilteredTasks(tasks.filter((task) => task.status === status));
@@ -85,14 +64,16 @@ export default function Component() {
     verifyUser();
   }, []);
 
-  async function setTaskStatus(task, status) {
+  async function setTaskStatus(id, status) {
     try {
       await axios
         .patch(`http://localhost:8080/task/status`, {
-          id: task.id,
+          id: id,
           status: status,
         })
-        .then((response) => {})
+        .then((response) => {
+          getTasks();
+        })
         .catch((error) => {});
       if (response.status == axios.HttpStatusCode.Ok) {
         getTasks();
@@ -113,7 +94,7 @@ export default function Component() {
         .then((response) => {
           if (response.status == axios.HttpStatusCode.Ok) {
             setTasks(response.data);
-            console.log(tasks[0].description);
+            console.log(tasks);
           }
         });
     } catch (error) {
@@ -122,11 +103,12 @@ export default function Component() {
   }
 
   const handleTaskCompletion = (id) => {
-    setTasks(
+    setFilteredTasks(
       tasks.map((task) =>
         task.id === id ? { ...task, completed: !task.completed } : task
       )
     );
+    setTaskStatus(id, "COMPLETED");
   };
   const handleTaskAdd = () => {
     setIsAddTaskFormVisible(true);
@@ -310,21 +292,39 @@ export default function Component() {
                   </CardHeader>
                   <CardContent>
                     <p>{task.description}</p>
-                    <p>От: {new Date(task.createdAt).toLocaleString()}</p>
-                    <p>До: {new Date(task.deadline).toLocaleString()}</p>
+                    <p>От: {new Date(...task.createdAt).toLocaleString()}</p>
+                    <p>До: {new Date(...task.deadline).toLocaleString()}</p>
                     <p>
                       Неактуально после:{" "}
-                      {new Date(task.expiresAt).toLocaleString()}
+                      {new Date(...task.expiresAt).toLocaleString()}
                     </p>
                   </CardContent>
-                  <CardFooter>
-                    <Button
-                      variant={task.completed ? "secondary" : "primary"}
-                      className="rounded-lg"
-                      OnClick={() => handleTaskCompletion(task.id)}
-                    >
-                      {task.completed ? "Undo" : "Complete"}
-                    </Button>
+                  <CardFooter className="space-x-4">
+                    {(task.status === "TODO" ||
+                      task.status === "IN_PROGRESS") && (
+                      <Button
+                        variant={task.completed ? "secondary" : "primary"}
+                        className="rounded-lg"
+                        OnClick={() => handleTaskCompletion(task.id)}
+                      >
+                        Завершить
+                      </Button>
+                    )}
+                    {(task.status === "TODO" ||
+                      task.status === "COMPLETED") && (
+                      <Button
+                        variant={
+                          task.status === "IN_PROGRESS"
+                            ? "primary"
+                            : "secondary"
+                        }
+                        className="rounded-lg"
+                        OnClick={() => setTaskStatus(task.id, "IN_PROGRESS")}
+                      >
+                        Приступить
+                      </Button>
+                    )}
+                    <p className="text-sm text-white">Status: {task.status}</p>
                   </CardFooter>
                 </Card>
               ))}
