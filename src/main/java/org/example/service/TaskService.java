@@ -51,15 +51,7 @@ public class TaskService implements ServiceInterface<TaskDto> {
             throw new Exception("No record found for add");
         }
 
-        TaskEntity taskEntity = TaskEntity.builder()
-                .name(taskDto.getName())
-                .description(taskDto.getDescription())
-                .status(taskDto.getStatus())
-                .createdAt(taskDto.getCreatedAt())
-                .author(author)
-                .expiresAt(taskDto.getExpiresAt())
-                .deadline(taskDto.getDeadline())
-                .build();
+        TaskEntity taskEntity = TaskEntity.builder().name(taskDto.getName()).description(taskDto.getDescription()).status(taskDto.getStatus()).createdAt(taskDto.getCreatedAt()).author(author).expiresAt(taskDto.getExpiresAt()).deadline(taskDto.getDeadline()).build();
         taskRepository.save(taskEntity);
     }
 
@@ -68,15 +60,7 @@ public class TaskService implements ServiceInterface<TaskDto> {
         List<TaskEntity> entityList = taskRepository.findAll();
         List<TaskDto> taskDtos = new ArrayList<>();
         for (TaskEntity entity : entityList) {
-            TaskDto taskDto = TaskDto.builder()
-                    .id(entity.getId())
-                    .name(entity.getName())
-                    .description(entity.getDescription())
-                    .status(entity.getStatus())
-                    .createdAt(entity.getCreatedAt())
-                    .expiresAt(entity.getExpiresAt())
-                    .deadline(entity.getDeadline())
-                    .build();
+            TaskDto taskDto = TaskDto.builder().id(entity.getId()).name(entity.getName()).description(entity.getDescription()).status(entity.getStatus()).createdAt(entity.getCreatedAt()).expiresAt(entity.getExpiresAt()).deadline(entity.getDeadline()).build();
             taskDtos.add(taskDto);
         }
         return taskDtos;
@@ -86,15 +70,7 @@ public class TaskService implements ServiceInterface<TaskDto> {
         List<TaskEntity> entityList = taskRepository.findByAuthorUsername(username);
         List<TaskDto> taskDtos = new ArrayList<>();
         for (TaskEntity entity : entityList) {
-            TaskDto taskDto = TaskDto.builder()
-                    .id(entity.getId())
-                    .name(entity.getName())
-                    .description(entity.getDescription())
-                    .status(entity.getStatus())
-                    .createdAt(entity.getCreatedAt())
-                    .expiresAt(entity.getExpiresAt())
-                    .deadline(entity.getDeadline())
-                    .build();
+            TaskDto taskDto = TaskDto.builder().id(entity.getId()).name(entity.getName()).description(entity.getDescription()).status(entity.getStatus()).userId(entity.getAuthor().getId()).username(entity.getAuthor().getUsername()).createdAt(entity.getCreatedAt()).expiresAt(entity.getExpiresAt()).deadline(entity.getDeadline()).build();
             taskDtos.add(taskDto);
         }
 
@@ -127,5 +103,19 @@ public class TaskService implements ServiceInterface<TaskDto> {
             taskEntity.setDeadline(taskDto.getDeadline());
         }
         taskRepository.save(taskEntity);
+    }
+
+
+    public TaskDto updateStatus(TaskDto taskDto) throws Exception {
+        Optional<TaskEntity> taskEntityOptional = taskRepository.findById(taskDto.getId());
+        if (taskEntityOptional.isEmpty()) {
+            throw new Exception("No record found for update");
+        }
+        TaskEntity taskEntity = taskEntityOptional.get();
+        if (taskDto.getStatus() != null) {
+            taskEntity.setStatus(taskDto.getStatus());
+        }
+        taskRepository.save(taskEntity);
+        return taskDto;
     }
 }
