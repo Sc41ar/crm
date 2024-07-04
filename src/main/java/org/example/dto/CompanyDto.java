@@ -13,6 +13,7 @@ import org.example.annotation.PhoneNumberIfNotBlank;
 @Getter
 @Setter
 @Builder
+@EqualsAndHashCode
 public class CompanyDto {
     /**
      * Идентификатор компании
