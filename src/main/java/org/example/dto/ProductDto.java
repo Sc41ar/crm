@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Builder
+@EqualsAndHashCode
 public class ProductDto {
     /**
      * Идентификатор продукта
@@ -37,6 +38,6 @@ public class ProductDto {
      * Цена за единицу измерения
      */
     @NotNull(message = "Price cannot be null", groups = Marker.OnCreate.class)
-    @Positive(message = "Price cannot be negative or equal to 0", groups = Marker.OnCreate.class)
+    @Positive(message = "Price cannot be negative or equal to 0", groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
     private BigDecimal unitPrice;
 }

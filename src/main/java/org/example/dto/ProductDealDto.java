@@ -41,12 +41,12 @@ public class ProductDealDto {
      * Количество продуктов
      */
     @NotNull(message = "Quantity cannot be null", groups = Marker.OnCreate.class)
-    @Positive(message = "Quantity cannot be negative or equal to 0", groups = Marker.OnCreate.class)
+    @Positive(message = "Quantity cannot be negative or equal to 0", groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
     private BigDecimal quantity;
     /**
      * Стоимость товаров
      */
-    @Null(message = "Quantity cannot be null", groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
+    @Null(message = "Cost is calculated automatically", groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
     private BigDecimal cost;
     /**
      * Единица измерения

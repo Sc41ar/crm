@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class ProductEntity {
     /**
      * Идентификатор продукта
