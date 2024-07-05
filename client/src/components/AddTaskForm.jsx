@@ -69,7 +69,7 @@ const AddTaskForm = ({ onClose }) => {
                 </h3>
                 <div className="mt-2">
                   <form
-                    className="p-4 space-y-6 space-x-1"
+                    className=" flex flex-col p-4 space-y-6 space-x-1"
                     onSubmit={handleSubmit}
                   >
                     <div className="flex items-center space-x-2">

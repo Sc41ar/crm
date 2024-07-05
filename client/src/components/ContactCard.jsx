@@ -10,16 +10,23 @@ import {
 import { Card } from "./Card";
 import ContactWindow from "./ContactWindow";
 import UpdateContactForm from "./UpdateContactForm";
+import AddDealForm from "./AddDealForm";
 
 const ContactCard = ({ contact, ClassName }) => {
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [showContactWindow, setShowContactWindow] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
   const handleUserClick = () => {
     setShowContactWindow(true);
   };
 
   const handleCloseModal = () => {
     setShowContactWindow(false);
+  };
+
+  const handleAddDealFormHandle = () => {
+    setShowForm(true);
   };
 
   return (
@@ -94,25 +101,18 @@ const ContactCard = ({ contact, ClassName }) => {
           />
         )}
 
-        <DropdownMenu
-          trigger={
-            <Button
-              variant="outline"
-              size="sm"
-              className="text-blue-500 hover:text-blue-700 hover:bg-blue-100 focus:ring-blue-500 focus:ring-2 rounded-xl"
-            >
-              <MoveVerticalIcon className="h-5 w-5" />
-              <span className="sr-only">More options</span>
-            </Button>
-          }
+        <Button
+          className="text-blue-500 hover:text-blue-700 hover:bg-blue-100 focus:ring-blue-500 focus:ring-2 rounded-xl"
+          variant="outline"
+          OnClick={() => {
+            setIsFormOpen(true);
+          }}
         >
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>Send email</DropdownMenuItem>
-            <DropdownMenuItem>Schedule call</DropdownMenuItem>
-            <DropdownMenuItem>Add to deal</DropdownMenuItem>
-            <DropdownMenuItem>Delete contact</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          Add to Deal
+        </Button>
+        {isFormOpen && (
+          <AddDealForm client={contact} onClose={() => setIsFormOpen(false)} />
+        )}
       </div>
     </Card>
   );

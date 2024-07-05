@@ -9,14 +9,15 @@ import NotFound from "./pages/NotFound";
 import Contacts from "./pages/Contacts";
 import Deals from "./pages/Deals";
 import Tasks from "./pages/Tasks";
+import Product from "./pages/Product";
 
 const router = createBrowserRouter([
   {
-    path: "/", 
+    path: "/",
     element: <DashBoard />,
   },
   {
-    path: "/signup", 
+    path: "/signup",
     element: <Singup />,
   },
   {
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
   {
     path: "/deals",
     element: <Deals />,
+  },
+  {
+    path: "/products",
+    element: <Product />,
   },
   {
     path: "/tasks",

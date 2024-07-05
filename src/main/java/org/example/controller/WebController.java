@@ -288,9 +288,9 @@ public class WebController {
      * @param productDto полученный DTO-объект продукта
      * @return HTTP-ответ
      */
-    @Validated({Marker.OnCreate.class})
+
     @PostMapping(path = "/product/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addProduct(@Valid @RequestBody ProductDto productDto) {
+    public ResponseEntity<String> addProduct(@Validated({Marker.OnCreate.class}) @RequestBody ProductDto productDto) {
         try {
             productService.add(productDto);
         } catch (Exception e) {

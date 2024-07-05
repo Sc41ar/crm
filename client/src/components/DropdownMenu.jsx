@@ -71,12 +71,13 @@ export function DropdownMenuSeparator() {
   return <div className="border-t border-gray-200 dark:border-gray-700" />;
 }
 
-export function DropdownMenuItem({ children }) {
+export function DropdownMenuItem({ children, onClick }) {
   return (
     <a
       href="#"
       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
       role="menuitem"
+      onClick={onClick}
     >
       {children}
     </a>
