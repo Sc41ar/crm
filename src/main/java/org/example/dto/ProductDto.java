@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Builder
+@EqualsAndHashCode
 public class ProductDto {
     /**
      * Идентификатор продукта
