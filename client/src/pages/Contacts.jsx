@@ -78,7 +78,7 @@ export default function Component() {
   };
 
   return (
-    <div className="flex h-screen w-screen">
+    <div className="flex h-full w-screen">
       <nav className="flex flex-col bg-gray-900 text-gray-400 dark:bg-gray-950 dark:text-gray-400">
         <div className="flex h-16 items-center justify-center border-b border-gray-800 dark:border-gray-800">
           <Link

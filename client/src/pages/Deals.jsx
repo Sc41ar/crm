@@ -30,14 +30,14 @@ import Badge from "../components/Badge";
 import axios from "axios";
 
 export default function Component() {
+  const [deals, setDeals] = useState([]);
+
   const verifyUser = async () => {
     try {
       await axios
         .post("http://localhost:8080/crm/verify", {}, { withCredentials: true })
         .then((response) => {
           if (response.status == axios.HttpStatusCode.Ok) {
-            // getClients();
-            // getCompanies();
           }
         });
     } catch (error) {
@@ -46,12 +46,32 @@ export default function Component() {
     }
   };
 
+  async function getDeals() {
+    try {
+      axios
+        .get("http://localhost:8080/crm/deal/get", {
+          params: {
+            username: sessionStorage.getItem("loginInfo"),
+          },
+        })
+        .then((response) => {
+          if (response.status == axios.HttpStatusCode.Ok) {
+            setDeals(response.data);
+            console.log(deals);
+          }
+        });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   useEffect(() => {
     verifyUser();
+    getDeals();
   }, []);
 
   return (
-    <div className="flex h-screen w-screen">
+    <div className="flex h-full w-screen">
       <nav className="flex flex-col bg-gray-900 text-gray-400 dark:bg-gray-950 dark:text-gray-400">
         <div className="flex h-16 items-center justify-center border-b border-gray-800 dark:border-gray-800">
           <Link
@@ -186,60 +206,69 @@ export default function Component() {
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody className="w-full bg-white dark:bg-gray-600 shadow rounded-lg p-4">
-                  <TableRow className="w-full bg-white dark:bg-slate-600 shadow rounded-lg p-4 text-center ">
-                    <TableCell className="font-medium">Project X</TableCell>
-                    <TableCell>
-                      <Badge
-                        variant="danger"
-                        className="w-full bg-white dark:bg-slate-300 rounded-md p-4"
-                      >
-                        Negotiation
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="">$50,000</TableCell>
-                    <TableCell className="">2023-07-31</TableCell>
-                    <TableCell className="">
-                      <div className="flex gap-3 justify-center">
-                        <Button
-                          className="text-blue-500 hover:text-blue-700 hover:bg-blue-100 focus:ring-blue-500 focus:ring-2 rounded-xl"
-                          variant="outline"
+                <TableBody className="w-full bg-slate-600 dark:bg-gray-600 shadow rounded-lg p-4">
+                  {deals.map((deal) => (
+                    <TableRow
+                      key={deal.id}
+                      className="w-full bg-white dark:bg-slate-600 shadow rounded-lg p-4 text-center "
+                    >
+                      <TableCell className="font-medium">{deal.name}</TableCell>
+                      <TableCell>
+                        <Badge
+                          variant="danger"
+                          className="w-full bg-white dark:bg-slate-300 rounded-md p-4"
                         >
-                          View
-                        </Button>
-                        <Button
-                          className="text-blue-500 hover:text-blue-700 hover:bg-blue-100 focus:ring-blue-500 focus:ring-2 rounded-xl"
-                          variant="outline"
-                        >
-                          Edit
-                        </Button>
-                        <DropdownMenu
-                          trigger={
-                            <Button
-                              className="text-blue-500 hover:text-blue-700 hover:bg-blue-100 focus:ring-blue-500 focus:ring-2 rounded-xl"
-                              variant="outline"
-                            >
-                              <MoveVerticalIcon className="h-5.5 w-5.5" />
-                              <span className="sr-only">More options</span>
-                            </Button>
-                          }
-                        >
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem>Mark as won</DropdownMenuItem>
-                            <DropdownMenuItem>Mark as lost</DropdownMenuItem>
-                            <DropdownMenuItem>Add to calendar</DropdownMenuItem>
-                            <DropdownMenuItem>Delete deal</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-                    </TableCell>
-                  </TableRow>
+                          {deal.stage}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="">{deal.totalCost}</TableCell>
+                      <TableCell className="">
+                        {new Date(deal.endDate).toLocaleString()}
+                      </TableCell>
+                      <TableCell className="">
+                        <div className="flex gap-3 justify-center">
+                          <Button
+                            className="text-blue-500 hover:text-blue-700 hover:bg-blue-100 focus:ring-blue-500 focus:ring-2 rounded-xl"
+                            variant="outline"
+                          >
+                            View
+                          </Button>
+                          <Button
+                            className="text-blue-500 hover:text-blue-700 hover:bg-blue-100 focus:ring-blue-500 focus:ring-2 rounded-xl"
+                            variant="outline"
+                          >
+                            Edit
+                          </Button>
+                          <DropdownMenu
+                            trigger={
+                              <Button
+                                className="text-blue-500 hover:text-blue-700 hover:bg-blue-100 focus:ring-blue-500 focus:ring-2 rounded-xl"
+                                variant="outline"
+                              >
+                                <MoveVerticalIcon className="h-5.5 w-5.5" />
+                                <span className="sr-only">More options</span>
+                              </Button>
+                            }
+                          >
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem>Mark as won</DropdownMenuItem>
+                              <DropdownMenuItem>Mark as lost</DropdownMenuItem>
+                              <DropdownMenuItem>
+                                Add to calendar
+                              </DropdownMenuItem>
+                              <DropdownMenuItem>Delete deal</DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             </CardContent>
             <CardFooter>
               <div className="text-xs text-gray-500 dark:text-gray-400">
-                Showing <strong>1-5</strong> of <strong>10</strong> deals
+                <strong>{deals.length}</strong> deals
               </div>
             </CardFooter>
           </Card>

@@ -157,6 +157,27 @@ public class DealService {
      * @param username логин сотрудника
      * @return список сделок сотрудника
      */
+    public List<DealDto> findByEmail(String email) {
+        List<DealDto> dealDtos = new ArrayList<>();
+        List<DealEntity> entityList = dealRepository.findByUserEmail(email);
+        for (DealEntity entity : entityList) {
+            DealDto dealDto = DealDto.builder().id(entity.getId()).name(entity.getName())
+                    .type(entity.getType()).stage(entity.getStage())
+                    .totalCost(entity.getTotalCost()).startDate(entity.getStartDate())
+                    .endDate(entity.getEndDate()).build();
+            dealDto.setClientId(entity.getClient().getId());
+            String fio = entity.getClient().getLastName() + (" ")
+                    + entity.getClient().getName().substring(0, 1) + (". ");
+            if (entity.getClient().getMiddleName() != null) {
+                fio = fio + entity.getClient().getMiddleName().substring(0, 1) + (".");
+            }
+            dealDto.setClientFio(fio);
+            dealDto.setUserUsername(entity.getUser().getUsername());
+            dealDtos.add(dealDto);
+        }
+        return dealDtos;
+    }
+
     public List<DealDto> findByUsername(String username) {
         List<DealDto> dealDtos = new ArrayList<>();
         List<DealEntity> entityList = dealRepository.findByUserUsername(username);

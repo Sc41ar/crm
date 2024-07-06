@@ -40,4 +40,6 @@ public interface DealRepository extends JpaRepository<DealEntity, Long> {
     @Modifying
     @Transactional
     void updateTotalCost(@Param("idDeal") Long id, @Param("costDeal") BigDecimal totalCost);
+
+    List<DealEntity> findByUserEmail(String email);
 }

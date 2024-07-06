@@ -19,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -390,9 +391,13 @@ public class WebController {
      *
      * @return список всех сделок сотрудника
      */
-    @GetMapping(path = "/deal/get", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<DealDto> getDealByUsername(@Valid @RequestBody DealDto dealDto) {
-        return dealService.findByUsername(dealDto.getUserUsername());
+    @GetMapping(path = "/deal/get", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<DealDto> getDealByUsername(@RequestParam String username) {
+        List<DealDto> list = new ArrayList<>();
+        list = dealService.findByUsername(username);
+        if (list.isEmpty())
+            list = dealService.findByEmail(username);
+        return list;
     }
 
     /**
