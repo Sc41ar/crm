@@ -202,15 +202,19 @@ export default function Component() {
                     <TableHead>Deal Name</TableHead>
                     <TableHead>Stage</TableHead>
                     <TableHead>Amount</TableHead>
-                    <TableHead>Close Date</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Start Date</TableHead>
+                    <TableHead>End Date</TableHead>
+                    <TableHead>Client ID</TableHead>
+                    <TableHead>Client FIO</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody className="w-full bg-slate-600 dark:bg-gray-600 shadow rounded-lg p-4">
+                <TableBody className="w-full bg-slate-600 dark:bg-gray-600 shadow rounded-lg p-2">
                   {deals.map((deal) => (
                     <TableRow
                       key={deal.id}
-                      className="w-full bg-white dark:bg-slate-600 shadow rounded-lg p-4 text-center "
+                      className="w-full bg-white dark:bg-slate-600 shadow rounded-lg p-4 space-x-2 text-center "
                     >
                       <TableCell className="font-medium">{deal.name}</TableCell>
                       <TableCell>
@@ -222,17 +226,17 @@ export default function Component() {
                         </Badge>
                       </TableCell>
                       <TableCell className="">{deal.totalCost}</TableCell>
+                      <TableCell className="">{deal.type}</TableCell>
+                      <TableCell className="">
+                        {new Date(deal.startDate).toLocaleString()}
+                      </TableCell>
                       <TableCell className="">
                         {new Date(deal.endDate).toLocaleString()}
                       </TableCell>
+                      <TableCell className="">{deal.clientId}</TableCell>
+                      <TableCell className="">{deal.clientFio}</TableCell>
                       <TableCell className="">
                         <div className="flex gap-3 justify-center">
-                          <Button
-                            className="text-blue-500 hover:text-blue-700 hover:bg-blue-100 focus:ring-blue-500 focus:ring-2 rounded-xl"
-                            variant="outline"
-                          >
-                            View
-                          </Button>
                           <Button
                             className="text-blue-500 hover:text-blue-700 hover:bg-blue-100 focus:ring-blue-500 focus:ring-2 rounded-xl"
                             variant="outline"
@@ -251,12 +255,18 @@ export default function Component() {
                             }
                           >
                             <DropdownMenuContent align="end">
-                              <DropdownMenuItem>Mark as won</DropdownMenuItem>
-                              <DropdownMenuItem>Mark as lost</DropdownMenuItem>
-                              <DropdownMenuItem>
+                              <DropdownMenuItem className="focus:bg-blue-500 focus:text-white">
+                                Mark as won
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="focus:bg-blue-500 focus:text-white">
+                                Mark as lost
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="focus:bg-blue-500 focus:text-white">
                                 Add to calendar
                               </DropdownMenuItem>
-                              <DropdownMenuItem>Delete deal</DropdownMenuItem>
+                              <DropdownMenuItem className="focus:bg-blue-500 focus:text-white">
+                                Delete deal
+                              </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </div>
