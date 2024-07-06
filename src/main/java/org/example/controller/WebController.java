@@ -351,11 +351,13 @@ public class WebController {
      * @param dealDto полученный DTO-объект сделки
      * @return HTTP-ответ
      */
-    @Validated({Marker.OnCreate.class})
+
+
     @PostMapping(path = "/deal/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addDeal(@Valid @RequestBody DealDto dealDto) {
+    @ResponseBody
+    public DealDto addDeal(@Validated({Marker.OnCreate.class}) @RequestBody DealDto dealDto, HttpServletResponse response) {
         try {
-            dealService.add(dealDto);
+            dealDto = dealService.add(dealDto);
         } catch (Exception e) {
             String errorMessage = e.getMessage();
             Map<String, String> errorResponse = new HashMap<>();
@@ -367,9 +369,10 @@ public class WebController {
             } catch (JsonProcessingException ex) {
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unknown error");
             }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(json);
+            return null;
         }
-        return ResponseEntity.status(HttpStatus.OK).body("Success");
+        response.setStatus(200);
+        return dealDto;
     }
 
     /**
@@ -377,10 +380,10 @@ public class WebController {
      *
      * @return список всех сделок
      */
-    @GetMapping(path = "/deal", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<DealDto> getDeal() {
-        return dealService.findAll();
-    }
+//    @GetMapping(path = "/deal", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public List<DealDto> getDeal() {
+//        return dealService.findAll();
+//    }
 
     /**
      * Обработка GET-запроса - Получение списка сделок сотрудника
@@ -424,9 +427,9 @@ public class WebController {
      * @param productDealDto полученный DTO-объект продукта сделки
      * @return HTTP-ответ
      */
-    @Validated({Marker.OnCreate.class})
+
     @PostMapping(path = "/product-deal/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addProductDeal(@Valid @RequestBody ProductDealDto productDealDto) {
+    public ResponseEntity<String> addProductDeal(@Validated({Marker.OnCreate.class}) @RequestBody ProductDealDto productDealDto) {
         try {
             productDealService.add(productDealDto);
         } catch (Exception e) {

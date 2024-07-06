@@ -111,7 +111,12 @@ const ContactCard = ({ contact, ClassName }) => {
           Add to Deal
         </Button>
         {isFormOpen && (
-          <AddDealForm client={contact} onClose={() => setIsFormOpen(false)} />
+          <AddDealForm
+            client={contact}
+            onClose={() => {
+              setIsFormOpen(false);
+            }}
+          />
         )}
       </div>
     </Card>
