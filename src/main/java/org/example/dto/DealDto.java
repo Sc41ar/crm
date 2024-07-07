@@ -13,6 +13,7 @@ import java.sql.Date;
 @Getter
 @Setter
 @Builder
+@EqualsAndHashCode
 public class DealDto {
     /**
      * Идентификатор сделки

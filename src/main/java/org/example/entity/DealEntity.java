@@ -16,6 +16,7 @@ import java.sql.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class DealEntity {
     /**
      * Идентификатор сделки
