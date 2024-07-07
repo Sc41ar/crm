@@ -52,11 +52,13 @@ public class DealController extends Controller {
     /**
      * Обработка GET-запроса - Получение списка сделок сотрудника
      *
-     * @return список всех сделок сотрудника
+     * @param username логин сотрудника
+     * @return список сделок конкретного сотрудника
      */
-    @GetMapping(path = "/deal/get", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<DealDto> getDealByUsername(@Valid @RequestBody DealDto dealDto) {
-        return dealService.findByUsername(dealDto.getUserUsername());
+    @GetMapping(path = "/deal/username", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public List<DealDto> getDealByUsername(@Valid @RequestParam("username") String username) {
+        return dealService.findByUsername(username);
     }
 
     /**

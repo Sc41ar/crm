@@ -24,7 +24,7 @@ public class ProductDealController extends Controller {
     }
 
     /**
-     * Обработка POST-запроса - Добавление новоо продукта в сделку
+     * Обработка POST-запроса - Добавление нового продукта в сделку
      *
      * @param productDealDto полученный DTO-объект продукта сделки
      * @return HTTP-ответ
@@ -53,11 +53,13 @@ public class ProductDealController extends Controller {
     /**
      * Обработка GET-запроса - Получение списка продуктов конкретной сделки
      *
+     * @param dealName название сделки
      * @return список всех продуктов сделки
      */
-    @GetMapping(path = "/product-deal/get", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ProductDealDto> getProductDealByDealName(@Valid @RequestBody ProductDealDto productDealDto) {
-        return productDealService.findByDealName(productDealDto.getDealName());
+    @GetMapping(path = "/product-deal/dealName", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public List<ProductDealDto> getProductDealByDealName(@Valid @RequestParam("dealName") String dealName) {
+        return productDealService.findByDealName(dealName);
     }
 
 
