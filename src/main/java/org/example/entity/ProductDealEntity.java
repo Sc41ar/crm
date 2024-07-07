@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class ProductDealEntity {
     /**
      * Составной первичный ключ

@@ -64,7 +64,7 @@ public class DealServiceTest {
             .startDate(new Date(2024, 2, 2)).clientId(clientEntity.getId())
             .userUsername(secondUserEntity.getUsername()).build();
     /**
-     * Второй Entity-объект
+     * Второй Entity-объект сделки
      */
     private final DealEntity secondDealEntity = DealEntity.builder().stage(secondDealDto.getStage())
             .type(secondDealDto.getType()).name(secondDealDto.getName()).totalCost(BigDecimal.ZERO)
@@ -143,7 +143,7 @@ public class DealServiceTest {
     }
 
     /**
-     * Тест  неудачной попытки добавления сделки с нулевым внешним ключом пользователя
+     * Тест неудачной попытки добавления сделки с нулевым внешним ключом пользователя
      */
     @Test
     void addNullForeignKey() {
