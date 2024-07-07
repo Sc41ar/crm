@@ -46,6 +46,8 @@ dependencies {
     testImplementation("org.mockito:mockito-junit-jupiter:5.12.0")
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
     implementation("org.slf4j:slf4j-api:2.0.13")
+    // https://mvnrepository.com/artifact/org.junit.platform/junit-platform-suite-engine
+    testImplementation("org.junit.platform:junit-platform-suite-engine:1.10.3")
 }
 
 tasks.test {
