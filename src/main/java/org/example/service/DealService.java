@@ -111,16 +111,18 @@ public class DealService {
             dealEntity.setEndDate(dealDto.getEndDate());
         }
         if (dealDto.getUserUsername() != null && !dealDto.getUserUsername().trim().isEmpty()) {
-            if (userRepository.findByUsername(dealDto.getUserUsername()).isEmpty()) {
+            Optional<UserEntity> userEntityOptional = userRepository.findByUsername(dealDto.getUserUsername());
+            if (userEntityOptional.isEmpty()) {
                 throw new Exception("Не найдена запись о сотруднике");
             }
-            dealEntity.setUser(userRepository.findByUsername(dealDto.getUserUsername()).get());
+            dealEntity.setUser(userEntityOptional.get());
         }
         if (dealDto.getClientId() != null) {
-            if (clientRepository.findById(dealDto.getClientId()).isEmpty()) {
+            Optional<ClientEntity> clientEntityOptional = clientRepository.findById(dealDto.getClientId());
+            if (clientEntityOptional.isEmpty()) {
                 throw new Exception("Не найдена запись о клиенте");
             }
-            dealEntity.setClient(clientRepository.findById(dealDto.getClientId()).get());
+            dealEntity.setClient(clientEntityOptional.get());
         }
         dealRepository.save(dealEntity);
     }

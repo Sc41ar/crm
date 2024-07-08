@@ -92,10 +92,11 @@ public class ClientService implements ServiceInterface<ClientDto> {
             clientEntity.setName(clientDto.getDescription());
         }
         if (clientDto.getIdCompany() != null) {
-            if (companyRepository.findById(clientDto.getIdCompany()).isEmpty()) {
+            Optional<CompanyEntity> companyEntity = companyRepository.findById(clientDto.getIdCompany());
+            if (companyEntity.isEmpty()) {
                 throw new Exception("Не найдена запись о компании");
             }
-            clientEntity.setCompany(companyRepository.findById(clientDto.getIdCompany()).get());
+            clientEntity.setCompany(companyEntity.get());
         }
         clientRepository.save(clientEntity);
     }

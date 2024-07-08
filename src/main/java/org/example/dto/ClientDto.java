@@ -13,6 +13,7 @@ import org.example.annotation.PhoneNumberIfNotBlank;
 @AllArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode
 public class ClientDto {
     /**
      * Идентификатор клиента

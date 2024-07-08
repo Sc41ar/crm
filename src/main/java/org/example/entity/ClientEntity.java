@@ -13,6 +13,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class ClientEntity {
     /**
      * Идентификатор клиента
