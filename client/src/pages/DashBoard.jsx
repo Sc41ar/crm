@@ -21,9 +21,98 @@ import {
   TableBody,
   TableCell,
 } from "../components/Table";
+import Badge from "../components/Badge";
 
 export default function Component() {
   const [costumersNumber, setCostumersNumber] = useState(0);
+  const [dealsNumber, setDealsNumber] = useState(0);
+  const [deals, setDeals] = useState([]);
+  const [tasks, setTasks] = useState([]);
+
+  const currentMonthDeals = deals.filter(
+    (deal) => new Date(deal.startDate).getMonth() === new Date().getMonth()
+  );
+  const lastMonthDeals = deals.filter(
+    (deal) => new Date(deal.startDate).getMonth() === new Date().getMonth() - 1
+  );
+
+  const currentMonthOfferDeals = currentMonthDeals.filter(
+    (deal) => deal.stage === "OFFER"
+  );
+  const lastMonthOfferDeals = lastMonthDeals.filter(
+    (deal) => deal.stage === "OFFER"
+  );
+
+  let percentageIncrease;
+  if (lastMonthOfferDeals.length === 0) {
+    percentageIncrease = 100;
+  } else {
+    percentageIncrease =
+      ((currentMonthOfferDeals.length - lastMonthOfferDeals.length) /
+        lastMonthOfferDeals.length) *
+      100;
+  }
+
+  function calculateOpenTasks(tasks) {
+    return tasks.filter((task) => task.status === "open").length;
+  }
+
+  function calculatePercentageChangeTasks(tasks) {
+    const currentMonth = new Date().getMonth();
+    const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+
+    const currentMonthInProgressTasks = tasks.filter(
+      (task) =>
+        task.status === "IN_PROGRESS" &&
+        new Date(task.startDate).getMonth() === currentMonth
+    ).length;
+
+    const lastMonthInProgressTasks = tasks.filter(
+      (task) =>
+        task.status === "IN_PROGRESS" &&
+        new Date(task.startDate).getMonth() === lastMonth
+    ).length;
+
+    if (lastMonthInProgressTasks === 0) return 100; // If there were no tasks last month, the change is 100%
+
+    const percentageChange =
+      ((currentMonthInProgressTasks - lastMonthInProgressTasks) /
+        lastMonthInProgressTasks) *
+      100;
+
+    return percentageChange.toFixed(2); // Round to 2 decimal places
+  }
+
+  const getTasks = async () => {
+    try {
+      await axios
+        .get("http://localhost:8080/task/all", {
+          params: { username: sessionStorage.getItem("loginInfo") },
+        })
+        .then((response) => {
+          setTasks(response.data);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getDeals = async () => {
+    try {
+      await axios
+        .get("http://localhost:8080/crm/deal/get", {
+          params: {
+            username: sessionStorage.getItem("loginInfo"),
+          },
+        })
+        .then((response) => {
+          setDeals(response.data);
+          setDealsNumber(response.data.length);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const getClients = async () => {
     let personNumber = 0;
@@ -38,6 +127,24 @@ export default function Component() {
       console.log(error);
     }
   };
+
+  function calculatePercentageChange(deals) {
+    const currentMonth = new Date().getMonth();
+    const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+
+    const currentMonthDeals = deals.filter(
+      (deal) => new Date(deal.startDate).getMonth() === currentMonth
+    ).length;
+    const lastMonthDeals = deals.filter(
+      (deal) => new Date(deal.startDate).getMonth() === lastMonth
+    ).length;
+
+    if (lastMonthDeals === 0) return 100;
+
+    const percentageChange =
+      ((currentMonthDeals - lastMonthDeals) / lastMonthDeals) * 100;
+    return percentageChange.toFixed(2);
+  }
 
   useEffect(() => {
     const verifyUser = async () => {
@@ -61,6 +168,8 @@ export default function Component() {
 
     verifyUser();
     getClients();
+    getDeals();
+    getTasks();
   }, []);
 
   return (
@@ -191,34 +300,36 @@ export default function Component() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{costumersNumber}</div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  +0.0% from last month
-                </p>
               </CardContent>
             </Card>
             <Card className="w-full bg-white dark:bg-gray-800 shadow rounded-lg p-4">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">New Leads</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  New offers
+                </CardTitle>
                 <ActivityIcon className="h-4 w-4 text-gray-500 dark:text-gray-400" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">234</div>
+                <div className="text-2xl font-bold">
+                  {deals.filter((deal) => deal.stage === "OFFER").length}
+                </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  +12.8% from last month
+                  {percentageIncrease.toFixed(2)}% increase from last month
                 </p>
               </CardContent>
             </Card>
             <Card className="w-full bg-white dark:bg-gray-800 shadow rounded-lg p-4">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Closed Deals
+                  Total Deals
                 </CardTitle>
                 <BriefcaseIcon className="h-4 w-4 text-gray-500 dark:text-gray-400" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">78</div>
+                <div className="text-2xl font-bold">{deals.length}</div>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  +8.3% from last month
+                  {/* Assuming you have a function to calculate the percentage change */}
+                  {calculatePercentageChange(deals)}% from last month
                 </p>
               </CardContent>
             </Card>
@@ -230,9 +341,12 @@ export default function Component() {
                 <SquareCheckIcon className="h-4 w-4 text-gray-500 dark:text-gray-400" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">142</div>
+                <div className="text-2xl font-bold">
+                  {tasks.filter((task) => task.status === "IN_PROGRESS").length}
+                </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  +3.1% from last month
+                  {/* Assuming you have a function to calculate the percentage change */}
+                  {calculatePercentageChangeTasks(tasks)}% from last month
                 </p>
               </CardContent>
             </Card>
@@ -244,9 +358,8 @@ export default function Component() {
                   Recent Deals
                 </CardTitle>
                 <Link
-                  href="#"
+                  to="/deals"
                   className="text-, font-medium text-blue-500 hover:underline"
-                  prefetch={false}
                 >
                   View all
                 </Link>
@@ -263,64 +376,68 @@ export default function Component() {
                       </TableHead>
                     </TableRow>
                   </TableHeader>
-                  <TableBody className="container border-b border-gray-500 dark:border-gray-800">
-                    <TableRow>
-                      <TableCell className="font-medium">
-                        <Link
-                          href="#"
-                          className="hover:underline"
-                          prefetch={false}
+                  {deals.slice(0, 5).map((deal) => (
+                    <TableRow
+                      key={deal.id}
+                      className="w-full bg-white dark:bg-slate-600 shadow rounded-lg p-4 space-x-2 text-center "
+                    >
+                      <TableCell className="font-medium">{deal.name}</TableCell>
+                      <TableCell>
+                        <Badge
+                          variant="danger"
+                          className="w-full bg-white dark:bg-slate-300 rounded-md p-4"
                         >
-                          Acme Inc. - Website Redesign
-                        </Link>
+                          {deal.stage}
+                        </Badge>
                       </TableCell>
-                      <TableCell>Negotiation</TableCell>
-                      <TableCell>$15,000</TableCell>
-                      <TableCell>June 30, 2023</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">
-                        <Link
-                          href="#"
-                          className="hover:underline"
-                          prefetch={false}
-                        >
-                          Globex Corp. - ERP Implementation
-                        </Link>
+                      <TableCell className="">{deal.totalCost}</TableCell>
+                      <TableCell className="">{deal.type}</TableCell>
+                      <TableCell className="">
+                        {new Date(deal.startDate).toLocaleString()}
                       </TableCell>
-                      <TableCell>Proposal</TableCell>
-                      <TableCell>$50,000</TableCell>
-                      <TableCell>July 15, 2023</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">
-                        <Link
-                          href="#"
-                          className="hover:underline"
-                          prefetch={false}
-                        >
-                          Stark Industries - CRM Upgrade
-                        </Link>
+                      <TableCell className="">
+                        {new Date(deal.endDate).toLocaleString()}
                       </TableCell>
-                      <TableCell>Closed Won</TableCell>
-                      <TableCell>$25,000</TableCell>
-                      <TableCell>May 1, 2023</TableCell>
-                    </TableRow>
-                    <TableRow className="">
-                      <TableCell className="font-medium">
-                        <Link
-                          href="#"
-                          className="hover:underline"
-                          prefetch={false}
-                        >
-                          Stark Industries - CRM Upgrade
-                        </Link>
+                      <TableCell className="">{deal.clientId}</TableCell>
+                      <TableCell className="">{deal.clientFio}</TableCell>
+                      <TableCell className="">
+                        <div className="flex gap-3 justify-center">
+                          <Button
+                            className="text-blue-500 hover:text-blue-700 hover:bg-blue-100 focus:ring-blue-500 focus:ring-2 rounded-xl"
+                            variant="outline"
+                          >
+                            Edit
+                          </Button>
+                          <DropdownMenu
+                            trigger={
+                              <Button
+                                className="text-blue-500 hover:text-blue-700 hover:bg-blue-100 focus:ring-blue-500 focus:ring-2 rounded-xl"
+                                variant="outline"
+                              >
+                                <MoveVerticalIcon className="h-5.5 w-5.5" />
+                                <span className="sr-only">More options</span>
+                              </Button>
+                            }
+                          >
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem className="focus:bg-blue-500 focus:text-white">
+                                Mark as won
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="focus:bg-blue-500 focus:text-white">
+                                Mark as lost
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="focus:bg-blue-500 focus:text-white">
+                                Add to calendar
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="focus:bg-blue-500 focus:text-white">
+                                Delete deal
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
                       </TableCell>
-                      <TableCell>Closed Won</TableCell>
-                      <TableCell>$25,000</TableCell>
-                      <TableCell>May 1, 2023</TableCell>
                     </TableRow>
-                  </TableBody>
+                  ))}
                 </Table>
               </CardContent>
             </Card>
@@ -448,6 +565,27 @@ function LayoutGridIcon(props) {
       <rect width="7" height="7" x="14" y="3" rx="1" />
       <rect width="7" height="7" x="14" y="14" rx="1" />
       <rect width="7" height="7" x="3" y="14" rx="1" />
+    </svg>
+  );
+}
+
+function MoveVerticalIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <polyline points="8 18 12 22 16 18" />
+      <polyline points="8 6 12 2 16 6" />
+      <line x1="12" x2="12" y1="2" y2="22" />
     </svg>
   );
 }
