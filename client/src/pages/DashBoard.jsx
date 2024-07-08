@@ -100,7 +100,7 @@ export default function Component() {
   const getDeals = async () => {
     try {
       await axios
-        .get("http://localhost:8080/crm/deal/get", {
+        .get("http://localhost:8080/crm/deal/username", {
           params: {
             username: sessionStorage.getItem("loginInfo"),
           },

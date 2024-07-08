@@ -11,10 +11,12 @@ import { Card } from "./Card";
 import ContactWindow from "./ContactWindow";
 import UpdateContactForm from "./UpdateContactForm";
 import AddDealForm from "./AddDealForm";
+import SendMailForm from "./SendMailForm";
 
 const ContactCard = ({ contact, ClassName }) => {
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [showContactWindow, setShowContactWindow] = useState(false);
+  const [isMailFormOpen, setIsMailFormOpen] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   const handleUserClick = () => {
@@ -101,15 +103,40 @@ const ContactCard = ({ contact, ClassName }) => {
           />
         )}
 
-        <Button
-          className="text-blue-500 hover:text-blue-700 hover:bg-blue-100 focus:ring-blue-500 focus:ring-2 rounded-xl"
-          variant="outline"
-          OnClick={() => {
-            setIsFormOpen(true);
-          }}
+        <DropdownMenu
+          trigger={
+            <Button variant="ghost" size="icon" className="rounded-full">
+              <MoveVerticalIcon className="h-5 w-5 text-gray-400 hover:text-gray-500" />
+            </Button>
+          }
         >
-          Add to Deal
-        </Button>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              onClick={() => {
+                setIsFormOpen(true);
+              }}
+            >
+              Add to Deal
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                setIsMailFormOpen(true);
+              }}
+            >
+              Send email
+            </DropdownMenuItem>
+            <DropdownMenuItem>Logout</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {isMailFormOpen && (
+          <SendMailForm
+            client={contact}
+            onClose={() => {
+              setIsMailFormOpen(false);
+            }}
+          />
+        )}
         {isFormOpen && (
           <AddDealForm
             client={contact}
