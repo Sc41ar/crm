@@ -56,7 +56,7 @@ public class ProductDealController extends Controller {
      * @param dealName название сделки
      * @return список всех продуктов сделки
      */
-    @GetMapping(path = "/product-deal/dealName", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/product-deal/dealName", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public List<ProductDealDto> getProductDealByDealName(@Valid @RequestParam("dealName") String dealName) {
         return productDealService.findByDealName(dealName);
