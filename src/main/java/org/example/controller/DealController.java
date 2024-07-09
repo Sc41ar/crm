@@ -64,7 +64,7 @@ public class DealController extends Controller {
      * @param monthYear строка месяц-год
      * @return HTTP-ответ - с файлом или пустой в случае ошибки
      */
-    @GetMapping(path = "/deal/report", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/deal/report", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public ResponseEntity<FileSystemResource> createReport(@RequestParam("month_year") String monthYear) {
         ResponseEntity<FileSystemResource> response;
@@ -80,7 +80,7 @@ public class DealController extends Controller {
             response = ResponseEntity.ok()
                     .headers(headers)
                     .contentLength(resource.contentLength())
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                     .body(resource);
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

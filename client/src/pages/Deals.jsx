@@ -28,6 +28,8 @@ import {
 } from "../components/Table";
 import Badge from "../components/Badge";
 import axios from "axios";
+import FileSaver from "file-saver";
+import { ca } from "date-fns/locale";
 
 export default function Component() {
   const [deals, setDeals] = useState([]);
@@ -46,6 +48,23 @@ export default function Component() {
     }
   };
 
+  async function downloadTable(monthYear) {
+    try {
+      const response = await axios.get(`/deal/report?month_year=${monthYear}`, {
+        responseType: "blob",
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "deal.xlsx");
+      document.body.appendChild(link);
+      link.click();
+    } catch (error) {
+      console.error("Error downloading Excel file:", error);
+    }
+  }
+
   async function getDeals() {
     try {
       axios
@@ -57,7 +76,6 @@ export default function Component() {
         .then((response) => {
           if (response.status == axios.HttpStatusCode.Ok) {
             setDeals(response.data);
-            console.log(deals);
           }
         });
     } catch (error) {
@@ -163,6 +181,7 @@ export default function Component() {
                 className="pl-8 pr-4 h-9 rounded-md bg-gray-100 dark:bg-gray-800 dark:text-gray-50"
               />
             </form>
+            <Button OnClick={() => downloadTable("07-2024")}>Download</Button>
             <DropdownMenu
               trigger={
                 <Button variant="ghost" size="icon" className="rounded-full">
@@ -255,18 +274,7 @@ export default function Component() {
                             }
                           >
                             <DropdownMenuContent align="end">
-                              <DropdownMenuItem className="focus:bg-blue-500 focus:text-white">
-                                Mark as won
-                              </DropdownMenuItem>
-                              <DropdownMenuItem className="focus:bg-blue-500 focus:text-white">
-                                Mark as lost
-                              </DropdownMenuItem>
-                              <DropdownMenuItem className="focus:bg-blue-500 focus:text-white">
-                                Add to calendar
-                              </DropdownMenuItem>
-                              <DropdownMenuItem className="focus:bg-blue-500 focus:text-white">
-                                Delete deal
-                              </DropdownMenuItem>
+                              {/* <DropdownMenuItem></DropdownMenuItem>/>                          */}
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </div>

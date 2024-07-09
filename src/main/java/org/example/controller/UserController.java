@@ -102,5 +102,7 @@ public class UserController extends Controller {
         response.setStatus(200);
         return "succeed";
     }
+
+
 }
 
