@@ -42,4 +42,15 @@ public interface DealRepository extends JpaRepository<DealEntity, Long> {
     void updateTotalCost(@Param("idDeal") Long id, @Param("costDeal") BigDecimal totalCost);
 
     List<DealEntity> findByUserEmail(String email);
+
+    /**
+     * Поиск записей по месяцу и году сделки
+     *
+     * @param month месяц
+     * @param year  год
+     * @return список из сущностей сделок
+     */
+
+    @Query("SELECT d FROM DealEntity d WHERE MONTH(d.startDate) = :month AND YEAR(d.startDate) = :year")
+    List<DealEntity> findByMonth(@Param("month") Integer month, @Param("year") Integer year);
 }

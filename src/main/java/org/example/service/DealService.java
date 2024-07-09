@@ -1,5 +1,7 @@
 package org.example.service;
 
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.example.dto.DealDto;
 import org.example.entity.ClientEntity;
 import org.example.entity.DealEntity;
@@ -127,7 +129,7 @@ public class DealService {
         dealRepository.save(dealEntity);
     }
 
-//    /**
+    //    /**
 //     * Получение списка всех сделок
 //     *
 //     * @return список всех сделок
@@ -152,13 +154,6 @@ public class DealService {
 //        }
 //        return dealDtos;
 //    }
-
-    /**
-     * Получение списка сделок по логину сотрудника
-     *
-     * @param username логин сотрудника
-     * @return список сделок сотрудника
-     */
     public List<DealDto> findByEmail(String email) {
         List<DealDto> dealDtos = new ArrayList<>();
         List<DealEntity> entityList = dealRepository.findByUserEmail(email);
@@ -180,6 +175,12 @@ public class DealService {
         return dealDtos;
     }
 
+    /**
+     * Получение списка сделок по логину сотрудника
+     *
+     * @param username логин сотрудника
+     * @return список сделок сотрудника
+     */
     public List<DealDto> findByUsername(String username) {
         List<DealDto> dealDtos = new ArrayList<>();
         List<DealEntity> entityList = dealRepository.findByUserUsername(username);
@@ -199,5 +200,111 @@ public class DealService {
             dealDtos.add(dealDto);
         }
         return dealDtos;
+    }
+
+    /**
+     * Получение списка сделок для конкретного месяца и года
+     *
+     * @param monthYear строка месяц-год
+     * @return список сделок
+     */
+    public List<DealDto> findByMonthYear(String monthYear) {
+        List<DealDto> dealDtos = new ArrayList<>();
+        Integer month = Integer.valueOf(monthYear.split("-")[0]);
+        Integer year = Integer.valueOf(monthYear.split("-")[1]);
+        List<DealEntity> entityList = dealRepository.findByMonth(month, year);
+        for (DealEntity entity : entityList) {
+            DealDto dealDto = DealDto.builder().name(entity.getName())
+                    .type(entity.getType()).stage(entity.getStage())
+                    .totalCost(entity.getTotalCost()).startDate(entity.getStartDate())
+                    .endDate(entity.getEndDate()).build();
+            String fio = entity.getClient().getLastName() + (" ")
+                    + entity.getClient().getName().substring(0, 1) + (". ");
+            if (entity.getClient().getMiddleName() != null) {
+                fio = fio + entity.getClient().getMiddleName().substring(0, 1) + (".");
+            }
+            dealDto.setClientFio(fio);
+            dealDto.setUserUsername(entity.getUser().getUsername());
+            dealDtos.add(dealDto);
+        }
+        return dealDtos;
+    }
+
+    /**
+     * Формирование файла excel с информацией о сделках за конкретный месяц
+     *
+     * @param monthYear строка месяц-год, для которого формируется отчет
+     * @return рабочая книга excel
+     */
+    public Workbook createXLSX(String monthYear) {
+        List<DealDto> dealDtos = findByMonthYear(monthYear);
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Deal");
+        for (int i = 0; i != 8; i++) {
+            sheet.setColumnWidth(i, 5000);
+        }
+        Row header = sheet.createRow(0);
+        CellStyle headerStyle = workbook.createCellStyle();
+        Font font = workbook.createFont();
+        font.setBold(true);
+        headerStyle.setFont(font);
+        headerStyle.setAlignment(HorizontalAlignment.CENTER);
+        headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        Cell headerCell = header.createCell(0);
+        headerCell.setCellValue("Name Deal");
+        headerCell.setCellStyle(headerStyle);
+        headerCell = header.createCell(1);
+        headerCell.setCellValue("Stage");
+        headerCell.setCellStyle(headerStyle);
+        headerCell = header.createCell(2);
+        headerCell.setCellValue("Total cost");
+        headerCell.setCellStyle(headerStyle);
+        headerCell = header.createCell(3);
+        headerCell.setCellValue("Type");
+        headerCell.setCellStyle(headerStyle);
+        headerCell = header.createCell(4);
+        headerCell.setCellValue("Start date");
+        headerCell.setCellStyle(headerStyle);
+        headerCell = header.createCell(5);
+        headerCell.setCellValue("End date");
+        headerCell.setCellStyle(headerStyle);
+        headerCell = header.createCell(6);
+        headerCell.setCellValue("Client");
+        headerCell.setCellStyle(headerStyle);
+        headerCell = header.createCell(7);
+        headerCell.setCellValue("User");
+        headerCell.setCellStyle(headerStyle);
+        CellStyle style = workbook.createCellStyle();
+        style.setWrapText(true);
+        style.setAlignment(HorizontalAlignment.CENTER); // выравнивание по центру
+        style.setVerticalAlignment(VerticalAlignment.CENTER); // вертикальное выравнивание по центру
+        for (int i = 0; i != dealDtos.size(); i++) {
+            Row row = sheet.createRow(i + 1);
+            Cell cell = row.createCell(0);
+            cell.setCellValue(dealDtos.get(i).getName());
+            cell.setCellStyle(style);
+            cell = row.createCell(1);
+            cell.setCellValue(dealDtos.get(i).getStage());
+            cell.setCellStyle(style);
+            cell = row.createCell(2);
+            cell.setCellValue(dealDtos.get(i).getTotalCost().toString());
+            cell.setCellStyle(style);
+            cell = row.createCell(3);
+            cell.setCellValue(dealDtos.get(i).getType());
+            cell.setCellStyle(style);
+            cell = row.createCell(4);
+            cell.setCellValue(dealDtos.get(i).getStartDate().toString());
+            cell.setCellStyle(style);
+            cell = row.createCell(5);
+            if (dealDtos.get(i).getEndDate() != null) cell.setCellValue(dealDtos.get(i).getEndDate().toString());
+            cell.setCellStyle(style);
+            cell = row.createCell(6);
+            cell.setCellValue(dealDtos.get(i).getClientFio());
+            cell.setCellStyle(style);
+            cell = row.createCell(7);
+            cell.setCellValue(dealDtos.get(i).getUserUsername());
+            cell.setCellStyle(style);
+        }
+        return workbook;
     }
 }

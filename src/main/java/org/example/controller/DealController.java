@@ -1,16 +1,22 @@
 package org.example.controller;
 
 import jakarta.validation.Valid;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.example.dto.DealDto;
 import org.example.dto.Marker;
 import org.example.service.DealService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -59,6 +65,36 @@ public class DealController extends Controller {
     @ResponseBody
     public List<DealDto> getDealByUsername(@Valid @RequestParam("username") String username) {
         return dealService.findByUsername(username);
+    }
+
+    /**
+     * Обработка GET-запроса - формирование отчета о сделках за конкретный месяц
+     *
+     * @param monthYear строка месяц-год
+     * @return HTTP-ответ - с файлом или пустой в случае ошибки
+     */
+    @GetMapping(path = "/deal/report", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<FileSystemResource> createReport(@RequestParam("month_year") String monthYear) {
+        ResponseEntity<FileSystemResource> response;
+        Workbook workbook = dealService.createXLSX(monthYear);
+        try {
+            File tempFile = File.createTempFile("temp", ".xlsx");
+            FileOutputStream fos = new FileOutputStream(tempFile);
+            workbook.write(fos);
+            fos.close();
+            FileSystemResource resource = new FileSystemResource(tempFile);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=deal.xlsx");
+            response = ResponseEntity.ok()
+                    .headers(headers)
+                    .contentLength(resource.contentLength())
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(resource);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+        return response;
     }
 
     /**

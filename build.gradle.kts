@@ -48,6 +48,11 @@ dependencies {
     implementation("org.slf4j:slf4j-api:2.0.13")
     // https://mvnrepository.com/artifact/org.junit.platform/junit-platform-suite-engine
     testImplementation("org.junit.platform:junit-platform-suite-engine:1.10.3")
+    // https://mvnrepository.com/artifact/org.apache.poi/poi
+    implementation("org.apache.poi:poi:5.3.0")
+    // https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml
+    implementation("org.apache.poi:poi-ooxml:5.3.0")
+
 }
 
 tasks.test {
