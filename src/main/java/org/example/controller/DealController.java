@@ -45,15 +45,6 @@ public class DealController extends Controller {
         return ResponseEntity.status(HttpStatus.OK).body("Success");
     }
 
-    /**
-     * Обработка GET-запроса - Получение списка всех сделок
-     *
-     * @return список всех сделок
-     */
-    //@GetMapping(path = "/deal", produces = MediaType.APPLICATION_JSON_VALUE)
-    // public List<DealDto> getDeal() {
-    // return dealService.findAll();
-    //}
 
     /**
      * Обработка GET-запроса - Получение списка сделок сотрудника

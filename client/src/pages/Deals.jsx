@@ -49,7 +49,7 @@ export default function Component() {
   async function getDeals() {
     try {
       axios
-        .get("http://localhost:8080/crm/deal/get", {
+        .get("http://localhost:8080/crm/deal/username", {
           params: {
             username: sessionStorage.getItem("loginInfo"),
           },

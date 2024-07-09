@@ -44,7 +44,7 @@ export function DropdownMenuTrigger({ children, onToggle }) {
 export function DropdownMenuContent({ children, onClose }) {
   return (
     <div
-      className="absolute right-0 mt-2 w-38 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-10"
+      className="flex flex-col absolute right-0 mt-2 w-38 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-10"
       onMouseLeave={onClose}
     >
       <div
@@ -73,13 +73,11 @@ export function DropdownMenuSeparator() {
 
 export function DropdownMenuItem({ children, onClick }) {
   return (
-    <a
-      href="#"
-      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
-      role="menuitem"
+    <button
+      className="text-sm w-full text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
       onClick={onClick}
     >
       {children}
-    </a>
+    </button>
   );
 }
