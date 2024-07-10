@@ -2,6 +2,7 @@
 import Button from "../components/Button";
 import Input from "../components/Input";
 import { React, useState, useEffect } from "react";
+import { BASE_URL } from "../config";
 
 let socket;
 const crypto = require("crypto");

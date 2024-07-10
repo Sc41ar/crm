@@ -5,6 +5,7 @@ import Input from "../components/Input";
 import { format } from "date-fns";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { BASE_URL } from "../config";
 
 const AddTaskForm = ({ onClose }) => {
   const [name, setName] = useState("");
@@ -16,7 +17,7 @@ const AddTaskForm = ({ onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let url = "http://localhost:8080/task/add";
+    let url = `${BASE_URL}:8080/task/add`;
 
     try {
       let data = {

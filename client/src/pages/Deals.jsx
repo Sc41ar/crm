@@ -1,6 +1,7 @@
 import { React, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Input from "../components/Input";
+import { BASE_URL } from "../config";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -37,7 +38,7 @@ export default function Component() {
   const verifyUser = async () => {
     try {
       await axios
-        .post("http://localhost:8080/crm/verify", {}, { withCredentials: true })
+        .post(`${BASE_URL}:8080/crm/verify`, {}, { withCredentials: true })
         .then((response) => {
           if (response.status == axios.HttpStatusCode.Ok) {
           }
@@ -50,9 +51,12 @@ export default function Component() {
 
   async function downloadTable(monthYear) {
     try {
-      const response = await axios.get(`/deal/report?month_year=${monthYear}`, {
-        responseType: "blob",
-      });
+      const response = await axios.get(
+        `${BASE_URL}/deal/report?month_year=${monthYear}`,
+        {
+          responseType: "blob",
+        }
+      );
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
@@ -68,7 +72,7 @@ export default function Component() {
   async function getDeals() {
     try {
       axios
-        .get("http://localhost:8080/crm/deal/username", {
+        .get(`${BASE_URL}:8080/crm/deal/username`, {
           params: {
             username: sessionStorage.getItem("loginInfo"),
           },

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Input from "../components/Input";
 import Button from "../components/Button";
+import { BASE_URL } from "../config";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -86,7 +87,7 @@ export default function Component() {
   const getTasks = async () => {
     try {
       await axios
-        .get("http://localhost:8080/task/all", {
+        .get(`${BASE_URL}:8080/task/all`, {
           params: { username: sessionStorage.getItem("loginInfo") },
         })
         .then((response) => {
@@ -100,7 +101,7 @@ export default function Component() {
   const getDeals = async () => {
     try {
       await axios
-        .get("http://localhost:8080/crm/deal/username", {
+        .get(`${BASE_URL}:8080/crm/deal/username`, {
           params: {
             username: sessionStorage.getItem("loginInfo"),
           },
@@ -117,7 +118,7 @@ export default function Component() {
   const getClients = async () => {
     let personNumber = 0;
     try {
-      await axios.get("http://localhost:8080/crm/client").then((response) => {
+      await axios.get(`${BASE_URL}:8080/crm/client`).then((response) => {
         personNumber = response.data.length;
       });
       await axios.get("http://localhost:8080/crm/company").then((response) => {

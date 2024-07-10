@@ -2,6 +2,7 @@ import { React, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Input from "../components/Input";
 import ConctactWindows from "../components/ContactWindow";
+import { BASE_URL } from "../config";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -26,7 +27,7 @@ export default function Component() {
   const verifyUser = async () => {
     try {
       await axios
-        .post("http://localhost:8080/crm/verify", {}, { withCredentials: true })
+        .post(`${BASE_URL}:8080/crm/verify`, {}, { withCredentials: true })
         .then((response) => {
           if (response.status == axios.HttpStatusCode.Ok) {
             getClients();
@@ -45,7 +46,7 @@ export default function Component() {
 
   const getClients = async () => {
     try {
-      await axios.get("http://localhost:8080/crm/client").then((response) => {
+      await axios.get(`${BASE_URL}:8080/client`).then((response) => {
         setContacts(response.data);
       });
     } catch (error) {
@@ -55,7 +56,7 @@ export default function Component() {
 
   const getCompanies = async () => {
     try {
-      await axios.get("http://localhost:8080/crm/company").then((response) => {
+      await axios.get(`${BASE_URL}:8080/company`).then((response) => {
         setCompanies(response.data);
       });
     } catch (error) {
@@ -66,7 +67,7 @@ export default function Component() {
   const handleAddUserSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8080/crm/contacts", {
+      const response = await axios.post(`${BASE_URL}:8080/crm/contacts`, {
         name,
         email,
         phone,

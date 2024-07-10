@@ -4,6 +4,7 @@ import Button from "../components/Button";
 import "../index.css";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { BASE_URL } from "../config";
 export default function Component() {
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -13,7 +14,7 @@ export default function Component() {
 
     axios
       .post(
-        "http://localhost:8080/crm/login",
+        `${BASE_URL}:8080/crm/login`,
         {
           emailOrUsername: name,
           password: password,

@@ -12,6 +12,7 @@ import Input from "./Input";
 import Textarea from "./TextArea";
 import Button from "./Button";
 import axios from "axios";
+import { BASE_URL } from "../config";
 
 export default function Component({ client, onClose }) {
   const [subject, setSubject] = useState("");
@@ -19,7 +20,7 @@ export default function Component({ client, onClose }) {
 
   async function handleSubmit() {
     axios
-      .post("http://localhost:8080/mail/send", {
+      .post(`${BASE_URL}:8080/mail/send`, {
         destination: client.email,
         subject: subject,
         body: text,

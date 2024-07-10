@@ -21,6 +21,7 @@ import {
 import axios from "axios";
 
 import AddTaskForm from "../components/AddTaskForm";
+import { BASE_URL } from "../config";
 
 export default function Component() {
   const [tasks, setTasks] = useState([]);
@@ -41,7 +42,7 @@ export default function Component() {
   const verifyUser = async () => {
     try {
       await axios
-        .post("http://localhost:8080/crm/verify", {}, { withCredentials: true })
+        .post(`${BASE_URL}:8080/crm/verify`, {}, { withCredentials: true })
         .then((response) => {
           if (response.status == axios.HttpStatusCode.Ok) {
             getTasks();
@@ -60,7 +61,7 @@ export default function Component() {
   async function setTaskStatus(id, status) {
     try {
       await axios
-        .patch(`http://localhost:8080/task/status`, {
+        .patch(`${BASE_URL}:8080/task/status`, {
           id: id,
           status: status,
         })
@@ -79,7 +80,7 @@ export default function Component() {
   function getTasks() {
     try {
       axios
-        .get("http://localhost:8080/task/all", {
+        .get(`${BASE_URL}:8080/task/all`, {
           params: {
             username: sessionStorage.getItem("loginInfo"),
           },

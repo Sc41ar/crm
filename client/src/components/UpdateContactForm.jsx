@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import Button from "../components/Button";
 import Input from "../components/Input";
+import { BASE_URL } from "../config";
 
 const EditContactForm = ({ onClose, contactId }) => {
   const [field, setField] = useState("name");
@@ -9,7 +10,7 @@ const EditContactForm = ({ onClose, contactId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let url = `http://localhost:8080/crm/client/update`;
+    let url = `${BASE_URL}:8080/crm/client/update`;
     try {
       const data = { id: contactId, [field]: value };
       const response = await axios.put(url, data);

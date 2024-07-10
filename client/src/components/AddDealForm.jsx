@@ -5,6 +5,7 @@ import Input from "../components/Input";
 import { format } from "date-fns";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { BASE_URL } from "../config";
 
 const AddDealForm = ({ client, onClose }) => {
   const [name, setName] = useState("");
@@ -20,7 +21,7 @@ const AddDealForm = ({ client, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let url = "http://localhost:8080/crm/deal/add";
+    let url = `${BASE_URL}:8080/crm/deal/add`;
 
     try {
       let data = {
@@ -46,7 +47,7 @@ const AddDealForm = ({ client, onClose }) => {
       };
       console.log(data);
       const responseS = await axios.post(
-        "http://localhost:8080/crm/product-deal/add",
+        `${BASE_URL}:8080/crm/product-deal/add`,
         data
       );
       console.log(responseS.data);
@@ -62,7 +63,7 @@ const AddDealForm = ({ client, onClose }) => {
 
   const getProducts = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/crm/product");
+      const response = await axios.get(`${BASE_URL}:8080/crm/product`);
       setProducts(response.data);
     } catch (error) {
       alert(error.response.data.error);

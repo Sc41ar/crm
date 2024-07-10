@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import Button from "../components/Button";
 import Input from "../components/Input";
+import { BASE_URL } from "../config";
 
 const AddContactForm = ({ onClose }) => {
   const [option, setOption] = useState("person");
@@ -28,7 +29,7 @@ const AddContactForm = ({ onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let url = "http://localhost:8080/crm/client/add";
+    let url = `${BASE_URL}:8080/crm/client/add`;
 
     if (!checkEmail(email) || !checkPhone(phone)) {
       setEmailError(true);
@@ -52,7 +53,7 @@ const AddContactForm = ({ onClose }) => {
         data.middleName = middleName;
         data.companyName = companyName;
       } else {
-        url = "http://localhost:8080/crm/company/add";
+        url = `${BASE_URL}:8080/crm/company/add`;
         data.name = companyName;
       }
       const response = await axios.post(url, data);

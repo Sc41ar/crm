@@ -4,6 +4,7 @@ import FormBlock from "../components/FormBlock";
 import Button from "../components/Button";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { BASE_URL } from "../config";
 
 export default function Component() {
   const [password, setPassword] = useState("");
@@ -33,7 +34,7 @@ export default function Component() {
       };
       console.log(data);
 
-      const response = await axios.post("http://localhost:8080/crm/reg", data);
+      const response = await axios.post(`${BASE_URL}:8080/crm/reg`, data);
 
       if (response.status === axios.HttpStatusCode.Ok) {
         alert("Registration successful");
