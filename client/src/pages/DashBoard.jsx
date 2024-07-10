@@ -121,7 +121,7 @@ export default function Component() {
       await axios.get(`${BASE_URL}:8080/crm/client`).then((response) => {
         personNumber = response.data.length;
       });
-      await axios.get("http://localhost:8080/crm/company").then((response) => {
+      await axios.get(`${BASE_URL}:8080/crm/company`).then((response) => {
         setCostumersNumber(personNumber + response.data.length);
       });
     } catch (error) {
@@ -151,11 +151,7 @@ export default function Component() {
     const verifyUser = async () => {
       try {
         await axios
-          .post(
-            "http://localhost:8080/crm/verify",
-            {},
-            { withCredentials: true }
-          )
+          .post(`${BASE_URL}:8080/crm/verify`, {}, { withCredentials: true })
           .then((response) => {
             console.log(response);
             if (response.status == axios.HttpStatusCode.Ok) {

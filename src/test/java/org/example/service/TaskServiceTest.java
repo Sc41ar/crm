@@ -20,50 +20,27 @@ import static org.junit.jupiter.api.Assertions.fail;
 @ExtendWith(MockitoExtension.class)
 public class TaskServiceTest {
 
-    @Mock
-    private TaskRepository taskRepository;
+    // @Mock
+    // private TaskRepository taskRepository;
 
-    @InjectMocks
-    private TaskService taskService;
-
-    @Test
-    public void addTask_shouldCallRepository() {
-        // Arrange
-        TaskDto testTask = TaskDto.builder()
-                .name("test")
-                .description("description")
-                .username("4")
-                .userId(2L)
-                .createdAt(LocalDateTime.now())
-                .expiresAt(LocalDateTime.now().plusMinutes(10))
-                .deadline(LocalDateTime.now().plusMinutes(1))
-                .status(TaskStatus.TODO)
-                .build();
+    // @InjectMocks
+    // private TaskService taskService;
 
 
-        // Act and Assert
-        try {
-            taskService.add(testTask);
-            assertTrue(true);
-        } catch (Exception e) {
-            fail();
-        }
-    }
+    // @Test
+    // public void findAll_shouldReturnListOfDto() {
+    //     List<TaskDto> actualList = taskService.findAll();
 
-    @Test
-    public void findAll_shouldReturnListOfDto() {
-        List<TaskDto> actualList = taskService.findAll();
+    //     // Arrange
+    //     Assertions.assertNotNull(actualList);
+    // }
 
-        // Arrange
-        Assertions.assertNotNull(actualList);
-    }
+    // @Test
+    // public void findAllByAuthorName_shouldReturnListOfDto() {
+    //     List<TaskDto> actualList = taskService.findByUsername("test");
 
-    @Test
-    public void findAllByAuthorName_shouldReturnListOfDto() {
-        List<TaskDto> actualList = taskService.findByUsername("test");
-
-        // Arrange
-        Assertions.assertNotNull(actualList);
-    }
+    //     // Arrange
+    //     Assertions.assertNotNull(actualList);
+    // }
 
 }

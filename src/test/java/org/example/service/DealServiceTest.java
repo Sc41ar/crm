@@ -91,6 +91,7 @@ public class DealServiceTest {
     @InjectMocks
     private DealService dealService;
 
+
     /**
      * Тест добавления сделки
      */
@@ -115,6 +116,18 @@ public class DealServiceTest {
         verify(clientRepository, Mockito.times(1)).findById(secondDealDto.getClientId());
         verify(userRepository, Mockito.times(1)).findByUsername(secondDealDto.getUserUsername());
     }
+//     @Test
+//     void add() {
+//         Optional<ClientEntity> clientEntityOptional = Optional.of(clientEntity);
+//         Optional<UserEntity> userEntityOptional = Optional.of(secondUserEntity);
+//         given(clientRepository.findById(secondDealDto.getClientId())).willReturn(clientEntityOptional);
+//         given(userRepository.findByUsername(secondDealDto.getUserUsername())).willReturn(userEntityOptional);
+//         assertDoesNotThrow(() -> dealService.add(secondDealDto));
+//         verify(dealRepository, Mockito.times(1))
+//                 .save(Mockito.argThat(arg -> arg.equals(secondDealEntity)));
+//         verify(clientRepository, Mockito.times(1)).findById(secondDealDto.getClientId());
+//         verify(userRepository, Mockito.times(1)).findByUsername(secondDealDto.getUserUsername());
+//     }
 
     /**
      * Тест неудачной попытки добавления сделки с несуществующим внешним ключом пользователя

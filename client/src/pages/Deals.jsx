@@ -72,7 +72,7 @@ export default function Component() {
   async function getDeals() {
     try {
       axios
-        .get(`${BASE_URL}:8080/crm/deal/username`, {
+        .get(`${BASE_URL}:8080/crm/deal/get`, {
           params: {
             username: sessionStorage.getItem("loginInfo"),
           },

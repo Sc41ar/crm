@@ -46,7 +46,7 @@ export default function Component() {
 
   const getClients = async () => {
     try {
-      await axios.get(`${BASE_URL}:8080/client`).then((response) => {
+      await axios.get(`${BASE_URL}:8080/crm/client`).then((response) => {
         setContacts(response.data);
       });
     } catch (error) {
@@ -56,7 +56,7 @@ export default function Component() {
 
   const getCompanies = async () => {
     try {
-      await axios.get(`${BASE_URL}:8080/company`).then((response) => {
+      await axios.get(`${BASE_URL}:8080crm//company`).then((response) => {
         setCompanies(response.data);
       });
     } catch (error) {
