@@ -58,7 +58,7 @@ const AddProductForm = ({ onClose }) => {
                   className="text-lg leading-6 font-medium text-gray-900"
                   id="modal-title"
                 >
-                  Add Contact
+                  Add Product
                 </h3>
                 <div className="mt-2">
                   <form
@@ -95,7 +95,7 @@ const AddProductForm = ({ onClose }) => {
                           <option value="км">Километр (км)</option>
                         </optgroup>
                         <option value="Штук">Шт.</option>
-                        <option value="Услуша">Услсуга</option>
+                        <option value="Услуга">Услуга</option>
                         <optgroup label="Время">
                           <option value="мин">Минут (мин)</option>
                           <option value="ч">Часов (ч)</option>

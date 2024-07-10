@@ -1,5 +1,8 @@
 package org.example.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletResponse;
 import org.example.dto.CompanyDto;
 import org.example.dto.Marker;
 import org.example.service.CompanyService;
@@ -10,7 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("crm/")
@@ -46,6 +51,35 @@ public class CompanyController extends Controller {
     @GetMapping(path = "/company", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<CompanyDto> getCompany() {
         return companyService.findAll();
+    }
+
+    /**
+     * Обработка GET-запроса - Получение компании по названию
+     *
+     * @param name     строка с названием компании
+     * @param response ответ на запрос
+     * @return DTO-объект компании
+     */
+    @GetMapping(path = "/company/name", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public CompanyDto getCompanyByName(@RequestParam("name") String name, HttpServletResponse response) {
+        CompanyDto companyDto = null;
+        try {
+            companyDto = companyService.findByName(name);
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", errorMessage);
+            ObjectMapper mapper = new ObjectMapper();
+            String json = null;
+            try {
+                json = mapper.writeValueAsString(errorResponse);
+            } catch (JsonProcessingException ex) {
+                response.setStatus(500);
+                return null;
+            }
+        }
+        return companyDto;
     }
 
     /**

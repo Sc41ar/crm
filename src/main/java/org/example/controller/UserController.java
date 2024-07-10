@@ -48,9 +48,8 @@ public class UserController extends Controller {
 
     /**
      * Обработка POST-запроса - Верификация пользователя
-     * Я НЕ ПРОВЕРЯЛ ПОКА, ЭТОТ МЕТОД СГЕНЕРИРОВАН
      *
-     * @param jwtString полученный DTO-объект пользователя для верификации
+     * @param jwtString полученная строка пользователя для верификации
      * @return результат верификации
      */
     @PostMapping(path = "/verify", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

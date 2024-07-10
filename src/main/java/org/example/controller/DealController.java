@@ -1,6 +1,5 @@
 package org.example.controller;
 
-import jakarta.validation.Valid;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.example.dto.DealDto;
 import org.example.dto.Marker;
@@ -49,13 +48,15 @@ public class DealController extends Controller {
     /**
      * Обработка GET-запроса - Получение списка сделок сотрудника
      *
-     * @param username логин сотрудника
-     * @return список сделок конкретного сотрудника
+     * @return список всех сделок сотрудника
      */
-    @GetMapping(path = "/deal/username", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public List<DealDto> getDealByUsername(@Valid @RequestParam("username") String username) {
-        return dealService.findByUsername(username);
+    @GetMapping(path = "/deal/get", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<DealDto> getDealByUsername(@RequestParam String username) {
+        List<DealDto> list;
+        list = dealService.findByUsername(username);
+        if (list.isEmpty())
+            list = dealService.findByEmail(username);
+        return list;
     }
 
     /**
