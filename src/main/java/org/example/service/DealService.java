@@ -173,7 +173,7 @@ public class DealService {
             dealDto.setClientId(entity.getClient().getId());
             String fio = entity.getClient().getLastName() + (" ")
                     + entity.getClient().getName().substring(0, 1) + (". ");
-            if (entity.getClient().getMiddleName() != null) {
+            if (!entity.getClient().getMiddleName().isEmpty() && !entity.getClient().getMiddleName().trim().isEmpty()) {
                 fio = fio + entity.getClient().getMiddleName().substring(0, 1) + (".");
             }
             dealDto.setClientFio(fio);
