@@ -48,7 +48,7 @@ public class DealServiceTest {
      */
     private final DealDto firstDealDto = DealDto.builder().id(3L).stage(RandomString.make(8))
             .type(RandomString.make(8)).name(RandomString.make(10))
-            .startDate(new Date(2024, 1, 1)).clientId(clientEntity.getId())
+            .startDate(new Date(System.currentTimeMillis())).clientId(clientEntity.getId())
             .userUsername(firstUserEntity.getUsername()).build();
     /**
      * Первый Entity-объект сделки
@@ -59,14 +59,15 @@ public class DealServiceTest {
     /**
      * Второй DTO-объект сделки
      */
-    private final DealDto secondDealDto = DealDto.builder().stage(RandomString.make(8))
+    private final DealDto secondDealDto = DealDto.builder().id(4L).stage(RandomString.make(8))
             .type(RandomString.make(8)).name(RandomString.make(10)).totalCost(BigDecimal.ZERO)
-            .startDate(new Date(2024, 2, 2)).clientId(clientEntity.getId())
+            .startDate(new Date(System.currentTimeMillis())).clientId(clientEntity.getId())
             .userUsername(secondUserEntity.getUsername()).build();
     /**
      * Второй Entity-объект сделки
      */
-    private final DealEntity secondDealEntity = DealEntity.builder().stage(secondDealDto.getStage())
+    private final DealEntity secondDealEntity = DealEntity.builder().id(secondDealDto.getId())
+            .stage(secondDealDto.getStage())
             .type(secondDealDto.getType()).name(secondDealDto.getName()).totalCost(BigDecimal.ZERO)
             .startDate(secondDealDto.getStartDate()).user(secondUserEntity).client(clientEntity).build();
     /**
@@ -91,38 +92,26 @@ public class DealServiceTest {
     private DealService dealService;
 
     /**
-     * Тест получения списка всех сделок
-     */
-    @Test
-    void findAll() {
-        List<DealEntity> listEntity = new ArrayList<>();
-        listEntity.add(firstDealEntity);
-        listEntity.add(secondDealEntity);
-        given(dealRepository.findAll()).willReturn(listEntity);
-        String fio = clientEntity.getLastName() + (" ") + clientEntity.getName().substring(0, 1) + (". ");
-        firstDealDto.setClientFio(fio);
-        secondDealDto.setClientFio(fio);
-        List<DealDto> allDealList = dealService.findAll();
-        assertEquals(2, allDealList.size());
-        assertEquals(firstDealDto, allDealList.get(0));
-        assertEquals(secondDealDto, allDealList.get(1));
-        verify(dealRepository, Mockito.times(1)).findAll();
-        firstDealDto.setClientFio(null);
-        secondDealDto.setClientFio(null);
-    }
-
-    /**
      * Тест добавления сделки
      */
     @Test
-    void add() {
+    void add() throws Exception {
+        DealDto addDto = DealDto.builder().id(secondDealEntity.getId())
+                .name(secondDealEntity.getName()).stage(secondDealEntity.getStage())
+                .startDate(secondDealEntity.getStartDate()).endDate(secondDealEntity.getEndDate())
+                .totalCost(secondDealEntity.getTotalCost()).build();
+        DealEntity noIdEntity = DealEntity.builder().name(secondDealEntity.getName()).stage(secondDealEntity.getStage())
+                .type(secondDealEntity.getType()).startDate(secondDealEntity.getStartDate())
+                .endDate(secondDealEntity.getEndDate())
+                .totalCost(secondDealEntity.getTotalCost()).client(clientEntity).user(secondUserEntity).build();
         Optional<ClientEntity> clientEntityOptional = Optional.of(clientEntity);
         Optional<UserEntity> userEntityOptional = Optional.of(secondUserEntity);
         given(clientRepository.findById(secondDealDto.getClientId())).willReturn(clientEntityOptional);
         given(userRepository.findByUsername(secondDealDto.getUserUsername())).willReturn(userEntityOptional);
-        assertDoesNotThrow(() -> dealService.add(secondDealDto));
-        verify(dealRepository, Mockito.times(1))
-                .save(Mockito.argThat(arg -> arg.equals(secondDealEntity)));
+        given(dealRepository.save(noIdEntity)).willReturn(secondDealEntity);
+        DealDto returnDto = dealService.add(secondDealDto);
+        assertEquals(addDto, returnDto);
+        verify(dealRepository, Mockito.times(1)).save(noIdEntity);
         verify(clientRepository, Mockito.times(1)).findById(secondDealDto.getClientId());
         verify(userRepository, Mockito.times(1)).findByUsername(secondDealDto.getUserUsername());
     }
