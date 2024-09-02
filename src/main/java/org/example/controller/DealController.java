@@ -6,6 +6,7 @@ import org.example.dto.Marker;
 import org.example.service.DealService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -51,9 +52,9 @@ public class DealController extends Controller {
      * @return список всех сделок сотрудника
      */
     @GetMapping(path = "/deal/get", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<DealDto> getDealByUsername(@RequestParam String username) {
+    public List<DealDto> getDealByUsername(@RequestParam String username, @RequestBody Pageable pageable) {
         List<DealDto> list;
-        list = dealService.findByUsername(username);
+        list = dealService.findByUsername(username, pageable);
         if (list.isEmpty())
             list = dealService.findByEmail(username);
         return list;

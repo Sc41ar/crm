@@ -15,10 +15,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -222,15 +226,21 @@ public class DealServiceTest {
      */
     @Test
     void findByUsername() {
-        List<DealEntity> listEntity = new ArrayList<>();
-        listEntity.add(firstDealEntity);
-        given(dealRepository.findByUserUsername(firstUserEntity.getUsername())).willReturn(listEntity);
+        // Creating a collection
+        List<DealEntity> listEntity = Arrays.asList(firstDealEntity);
+        // Wrap it into Page
+        Pageable pageable = PageRequest.of(0, 1);
+        Page<DealEntity> entityPage = new PageImpl<>(listEntity, pageable, 1);
+
+        given(dealRepository.findByUserUsername(firstUserEntity.getUsername(), pageable)).willReturn(entityPage);
+        // Move username to DTO
         String fio = firstDealEntity.getClient().getLastName() + (" ") + firstDealEntity.getClient().getName().substring(0, 1) + (". ");
         firstDealDto.setClientFio(fio);
-        List<DealDto> allDealList = dealService.findByUsername(firstDealDto.getUserUsername());
+        List<DealDto> allDealList = dealService.findByUsername(firstDealDto.getUserUsername(), pageable);
+        // Assertions
         assertEquals(1, allDealList.size());
         assertEquals(firstDealDto, allDealList.get(0));
-        verify(dealRepository, Mockito.times(1)).findByUserUsername(firstDealDto.getUserUsername());
+        verify(dealRepository, Mockito.times(1)).findByUserUsername(firstDealDto.getUserUsername(), pageable);
         firstDealDto.setClientFio(null);
     }
 }
