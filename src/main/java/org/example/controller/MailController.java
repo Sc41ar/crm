@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/mail")
 public class MailController extends Controller {
-
+    
     private final MailSenderService mailService;
 
     @Autowired

@@ -10,6 +10,6 @@
         <module name="auth.main" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="22" />
+    <bytecodeTargetLevel target="21" />
   </component>
 </project>

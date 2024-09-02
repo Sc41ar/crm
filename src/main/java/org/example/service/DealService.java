@@ -10,6 +10,8 @@ import org.example.repository.ClientRepository;
 import org.example.repository.DealRepository;
 import org.example.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -162,10 +164,10 @@ public class DealService {
      * @param username логин сотрудника
      * @return список сделок сотрудника
      */
-    public List<DealDto> findByUsername(String username) {
+    public List<DealDto> findByUsername(String username, Pageable pageable) {
         List<DealDto> dealDtos = new ArrayList<>();
-        List<DealEntity> entityList = dealRepository.findByUserUsername(username);
-        for (DealEntity entity : entityList) {
+        Page<DealEntity> entityPage = dealRepository.findByUserUsername(username, pageable);
+        for (DealEntity entity : entityPage) {
             DealDto dealDto = DealDto.builder().id(entity.getId()).name(entity.getName())
                     .type(entity.getType()).stage(entity.getStage())
                     .totalCost(entity.getTotalCost()).startDate(entity.getStartDate())
